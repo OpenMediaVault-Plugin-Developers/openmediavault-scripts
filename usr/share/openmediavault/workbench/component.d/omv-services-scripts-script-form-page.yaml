@@ -1,0 +1,47 @@
+version: '1.0'
+type: component
+data:
+  name: omv-services-scripts-script-form-page
+  type: formPage
+  config:
+    request:
+      service: Scripts
+      get:
+        method: getScript
+        params:
+          uuid: '{{ _routeParams.uuid }}'
+      post:
+        method: setScript
+    fields:
+      - type: confObjUuid
+      - type: textInput
+        name: name
+        label: _('Name')
+        value: ''
+        disabled: '{{ _routeConfig.data.editing | toboolean }}'
+        validators:
+          required: true
+      - type: select
+        name: ext
+        label: _('Extension')
+        value: 'sh'
+        disabled: '{{ _routeConfig.data.editing | toboolean }}'
+        store:
+          data:
+            - [ 'ksh', 'ksh' ]
+            - [ 'py', 'python' ]
+            - [ 'sh', 'sh' ]
+      - type: codeEditor
+        name: body
+        label: _('Script')
+        value: ''
+        language: 'shell'
+    buttons:
+      - template: submit
+        execute:
+          type: url
+          url: '/services/scripts/scripts'
+      - template: cancel
+        execute:
+          type: url
+          url: '/services/scripts/scripts'

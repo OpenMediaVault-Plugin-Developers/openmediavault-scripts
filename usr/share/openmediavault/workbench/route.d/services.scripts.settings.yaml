@@ -1,0 +1,7 @@
+version: "1.0"
+type: route
+data:
+  url: "/services/scripts/settings"
+  title: _("Settings")
+  editing: true
+  component: omv-services-scripts-settings-form-page

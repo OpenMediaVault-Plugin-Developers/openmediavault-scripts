@@ -1,0 +1,7 @@
+version: "1.0"
+type: route
+data:
+  url: "/services/scripts/pyscript/create"
+  title: _("Create")
+  notificationTitle: _("Created python script.")
+  component: omv-services-scripts-pyscript-form-page

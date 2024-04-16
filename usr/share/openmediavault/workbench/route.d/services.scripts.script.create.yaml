@@ -1,0 +1,7 @@
+version: "1.0"
+type: route
+data:
+  url: "/services/scripts/script/create"
+  title: _("Create")
+  notificationTitle: _("Created shell script.")
+  component: omv-services-scripts-script-form-page

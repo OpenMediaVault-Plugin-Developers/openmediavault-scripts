@@ -1,0 +1,15 @@
+Source: openmediavault-scripts
+Section: net
+XB-Plugin-Section: utilities
+Priority: optional
+Maintainer: OpenMediaVault Plugin Developers <plugins@omv-extras.org>
+Build-Depends: debhelper (>= 13 )
+Standards-Version: 4.3.0
+Homepage: http://omv-extras.org/
+
+Package: openmediavault-scripts
+Architecture: all
+Depends: openmediavault (>= 7),
+         ${misc:Depends}
+Description: OpenMediaVault scripts plugin
+ lightweight plugin to maintain and execute docker-scripts files.

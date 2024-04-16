@@ -1,0 +1,70 @@
+version: '1.0'
+type: component
+data:
+  name: omv-services-scripts-scripts-datatable-page
+  type: datatablePage
+  config:
+    autoReload: false
+    hasSearchField: true
+    rowId: name
+    stateId: 0ea95af4-fabd-11ee-8e48-33c0392725c0
+    sorters:
+      - dir: asc
+        prop: name
+    store:
+      proxy:
+        service: Scripts
+        get:
+          method: getScriptList
+    columns:
+      - name: _('Name')
+        prop: name
+        flexGrow: 1
+        sortable: true
+      - name: _('Extension')
+        prop: ext
+        flexGrow: 1
+        sortable: true
+    actions:
+      - type: iconButton
+        icon: mdi:text-box-plus-outline
+        tooltip: _('Add')
+        execute:
+          type: url
+          url: '/services/scripts/script/create'
+      - type: iconButton
+        icon: edit
+        tooltip: _('Edit')
+        enabledConstraints:
+          minSelected: 1
+          maxSelected: 1
+        execute:
+          type: url
+          url: '/services/scripts/script/edit/{{ _selected[0].uuid }}'
+      - template: delete
+        confirmationDialogConfig:
+          template: confirmation-danger
+          message: _('This action will delete this script and all scheduled jobs for this script.<br/>Are you sure you want to delete?')
+        execute:
+          type: request
+          request:
+            service: Scripts
+            method: deleteScript
+            params:
+              uuid: '{{ _selected[0].uuid }}'
+      - type: iconButton
+        icon: mdi:play-outline
+        tooltip: _('Run')
+        enabledConstraints:
+          minSelected: 1
+          maxSelected: 1
+        execute:
+          type: taskDialog
+          taskDialog:
+            config:
+              title: _('Run script ...')
+              request:
+                service: Scripts
+                method: doRun
+                params:
+                  uuid: '{{ _selected[0].uuid }}'

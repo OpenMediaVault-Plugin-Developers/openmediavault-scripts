@@ -1,0 +1,72 @@
+version: '1.0'
+type: component
+data:
+  name: omv-services-scripts-settings-form-page
+  type: formPage
+  config:
+    request:
+      service: Scripts
+      get:
+        method: get
+      post:
+        method: set
+    fields:
+      - type: sharedFolderSelect
+        name: sharedfolderref
+        label: _('Shared folder')
+        hasEmptyOption: true
+        hint: _('Location of scripts')
+      - type: container
+        fields:
+          - type: select
+            name: scriptsowner
+            label: _('Owner of scripts')
+            placeholder: _('Select a user ...')
+            value: 'root'
+            valueField: 'name'
+            textField: 'name'
+            store:
+              proxy:
+                service: UserMgmt
+                get:
+                  method: enumerateAllUsers
+              sorters:
+                - dir: asc
+                  prop: name
+            validators:
+              required: true
+          - type: select
+            name: scriptsgroup
+            label: _('Group of scripts')
+            placeholder: _('Select a group ...')
+            value: 'root'
+            valueField: 'name'
+            textField: 'name'
+            store:
+              proxy:
+                service: UserMgmt
+                get:
+                  method: enumerateAllGroups
+              sorters:
+                - dir: asc
+                  prop: name
+            validators:
+              required: true
+      - type: select
+        name: fileperms
+        label: _('Permissions of scripts')
+        value: '700'
+        store:
+          data:
+            - [ '700', _('Administrator - read/write, Users - no access, Others - no access') ]
+            - [ '750', _('Administrator - read/write, Users - read-only, Others - no access') ]
+            - [ '770', _('Administrator - read/write, Users - read/write, Others - no access') ]
+            - [ '755', _('Administrator - read/write, Users - read-only, Others - read-only') ]
+            - [ '775', _('Administrator - read/write, Users - read/write, Others - read-only') ]
+            - [ '777', _('Everyone - read/write') ]
+    buttons:
+      - template: submit
+      - template: cancel
+        execute:
+          type: url
+          url: '/services/scripts'

@@ -1,0 +1,122 @@
+{
+  "type": "config",
+  "id": "conf.service.scripts",
+  "title": "scripts",
+  "queryinfo": {
+    "xpath": "//services/scripts",
+    "iterable": false
+  },
+  "properties": {
+    "sharedfolderref": {
+      "type": "string",
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uuidv4"
+        },
+        {
+          "type": "string",
+          "maxLength": 0
+        }
+      ]
+    },
+    "scriptsowner": {
+      "type": "string",
+      "default": "root"
+    },
+    "scriptsgroup": {
+      "type": "string",
+      "default": "root"
+    },
+    "fileperms": {
+      "type": "string",
+      "default": "700"
+    },
+    "files": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uuid": {
+                "type": "string",
+                "format": "uuidv4"
+              },
+              "name": {
+                "type": "string"
+              },
+              "ext": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "jobs": {
+      "type": "object",
+      "properties": {
+        "job": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uuid": {
+                "type": "string",
+                "format": "uuidv4"
+              },
+              "enable": {
+                "type": "boolean"
+              },
+              "script": {
+                "type": "string",
+                "format": "uuidv4"
+              },
+              "args": {
+                "type": "string"
+              },
+              "sendemail": {
+                "type": "boolean"
+              },
+              "comment": {
+                "type": "string"
+              },
+              "execution": {
+                "type": "string"
+              },
+              "minute": {
+                "type": "string"
+              },
+              "everynminute": {
+                "type": "boolean"
+              },
+              "hour": {
+                "type": "string"
+              },
+              "everynhour": {
+                "type": "boolean"
+              },
+              "month": {
+                "type": "string"
+              },
+              "dayofmonth": {
+                "type": "string"
+              },
+              "everyndayofmonth": {
+                "type": "boolean"
+              },
+              "dayofweek": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
