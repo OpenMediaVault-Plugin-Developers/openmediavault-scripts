@@ -159,7 +159,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         // Verify that shared folder is set
         $db = \OMV\Config\Database::getInstance();
         $sfpath = $this->getScriptsPath($context);
-	$uuid = $params['uuid'];
+        $uuid = $params['uuid'];
         // Delete jobs for this script
         $jobs = $db->get('conf.service.scripts.job');
         foreach ($jobs as $job) {
