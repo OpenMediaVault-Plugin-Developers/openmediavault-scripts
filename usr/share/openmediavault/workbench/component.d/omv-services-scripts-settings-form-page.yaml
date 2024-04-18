@@ -58,12 +58,18 @@ data:
         value: '700'
         store:
           data:
-            - [ '700', _('Administrator - read/write, Users - no access, Others - no access') ]
-            - [ '750', _('Administrator - read/write, Users - read-only, Others - no access') ]
-            - [ '770', _('Administrator - read/write, Users - read/write, Others - no access') ]
-            - [ '755', _('Administrator - read/write, Users - read-only, Others - read-only') ]
-            - [ '775', _('Administrator - read/write, Users - read/write, Others - read-only') ]
-            - [ '777', _('Everyone - read/write') ]
+            - - '700'
+              - _('Administrator - read/write, Users - no access, Others - no access')
+            - - '750'
+              - _('Administrator - read/write, Users - read-only, Others - no access')
+            - - '770'
+              - _('Administrator - read/write, Users - read/write, Others - no access')
+            - - '755'
+              - _('Administrator - read/write, Users - read-only, Others - read-only')
+            - - '775'
+              - _('Administrator - read/write, Users - read/write, Others - read-only')
+            - - '777'
+              - _('Everyone - read/write')
     buttons:
       - template: submit
       - template: cancel
