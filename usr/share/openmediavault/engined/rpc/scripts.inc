@@ -171,7 +171,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         }
         // Delete the configuration object.
         $object = $db->get('conf.service.scripts.file', $params['uuid']);
-        $scriptFile = sprintf('%s/%s', $sfpath, $object->get('name'));
+        $scriptFile = sprintf('%s/%s.%s', $sfpath, $object->get('name'), $object->get('ext'));
         if (file_exists($scriptFile)) {
             unlink($scriptFile);
         }
