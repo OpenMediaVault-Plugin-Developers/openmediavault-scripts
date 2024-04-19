@@ -146,6 +146,11 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             $db->assertIsUnique($object, 'name');
         }
         $db->set($object);
+        // Apply changes immmediately
+        \OMV\Rpc\Rpc::call('Config', 'applyChanges', [
+            'modules' => [ 'scripts' ],
+            'force' => TRUE
+        ], $context);
         // Return the configuration object.
         return $object->getAssoc();
     }
