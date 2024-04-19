@@ -99,9 +99,17 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->validateMethodParams($params, 'rpc.common.getlist');
         // Get configuration data.
         $db = \OMV\Config\Database::getInstance();
-        $objects = $db->getAssoc('conf.service.scripts.file');
+        $objects = $db->get('conf.service.scripts.file');
+        // Add additional script info
+        $sfpath = $this->getScriptsPath($context);
+        $objectsAssoc = [];
+        foreach ($objects as $objectk => &$objectv) {
+            $fullpath = sprintf('%s/%s.%s', $sfpath, $objectv->get('name'), $objectv->get('ext'));
+            $objectv->add('fullpath', 'string', $fullpath);
+            $objectsAssoc[] = $objectv->getAssoc();
+        }
         // Filter the result.
-        return $this->applyFilter($objects, $params['start'], $params['limit'],
+        return $this->applyFilter($objectsAssoc, $params['start'], $params['limit'],
             $params['sortfield'], $params['sortdir'], $params['search']);
     }
 
@@ -198,7 +206,12 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 $output = [];
                 $scriptFile = sprintf('%s/%s.%s', $sfpath, $script->get('name'), $script->get('ext'));
                 if (file_exists($scriptFile)) {
-                    $cmd = new \OMV\System\Process($scriptFile);
+                    $cmdArgs = [];
+                    $cmdArgs[] = $scriptFile;
+                    if (strlen($script->get('testargs')) > 0) {
+                        $cmdArgs[] = $script->get('testargs');
+                    }
+                    $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
                     $cmdLine = $cmd->getCommandLine();
                     if (0 !== $this->exec($cmdLine, $output, $bgOutputFilename)) {

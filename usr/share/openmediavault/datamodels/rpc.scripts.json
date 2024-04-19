@@ -51,6 +51,10 @@
         "ext": {
           "type": "string",
           "required": true
+        },
+        "testargs": {
+          "type": "string",
+          "required": false
         }
       }
     }

@@ -20,6 +20,9 @@
     },
     "body": {
       "type": "string"
+    },
+    "testargs": {
+      "type": "string"
     }
   }
 }

@@ -25,6 +25,16 @@ data:
         prop: ext
         flexGrow: 1
         sortable: true
+      - name: _('Testing Arguments')
+        prop: testargs
+        flexGrow: 1
+        sortable: true
+      - name: _('Full Path')
+        prop: fullpath
+        flexGrow: 2
+        sortable: true
+        hidden: true
+        cellTemplateName: copyToClipboard
     actions:
       - type: iconButton
         icon: mdi:text-box-plus-outline
