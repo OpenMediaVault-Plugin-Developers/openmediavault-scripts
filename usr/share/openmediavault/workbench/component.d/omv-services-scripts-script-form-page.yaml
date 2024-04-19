@@ -21,7 +21,9 @@ data:
         disabled: '{{ _routeConfig.data.editing | toboolean }}'
         validators:
           required: true
-          patternType: groupName
+          pattern:
+            pattern: '^[A-Za-z0-9\_\-\.\:]+$'
+            errorData: _('Invalid script name')
       - type: select
         name: ext
         label: _('Extension')
