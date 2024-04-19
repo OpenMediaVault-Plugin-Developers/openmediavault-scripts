@@ -21,7 +21,7 @@ data:
         disabled: '{{ _routeConfig.data.editing | toboolean }}'
         validators:
           required: true
-          patternType: wordChars
+          patternType: groupName
       - type: select
         name: ext
         label: _('Extension')
