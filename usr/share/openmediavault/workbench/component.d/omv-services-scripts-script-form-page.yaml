@@ -43,7 +43,7 @@ data:
         name: testargs
         label: _('Testing arguments')
         value: ''
-        hints: _('These arguments are used for test runs in the Scripts tab only.<br/>They will not be used for scheduled jobs.')
+        hint: _('These arguments are used for test runs in the Scripts tab only.<br/>They will not be used for scheduled jobs.')
     buttons:
       - template: submit
         execute:
