@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-19 13:03-0500\n"
+"POT-Creation-Date: 2024-04-20 11:11-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: Marcelo Esteves <marcelopge@gmail.com>, 2024\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/pt_BR/)\n"
@@ -21,6 +21,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+msgid "Add"
+msgstr ""
 
 msgid "Create"
 msgstr "Criar"
@@ -46,6 +49,21 @@ msgstr "Editar a tarefa agendada."
 msgid "Edit shell script."
 msgstr "Editar shell script."
 
+msgid "Import"
+msgstr ""
+
+msgid "Import existing scripts ..."
+msgstr ""
+
+msgid "Import one"
+msgstr ""
+
+msgid "Import one existing script ..."
+msgstr ""
+
+msgid "Path"
+msgstr ""
+
 msgid "Schedule"
 msgstr "Agendar"
 
@@ -54,3 +72,13 @@ msgstr "Scripts"
 
 msgid "Settings"
 msgstr "Configurações"
+
+msgid ""
+"This will import one or more scripts in the selected folder.<br/>It will not"
+" import any scripts that already exist in the plugin."
+msgstr ""
+
+msgid ""
+"This will import one script from the specified path.<br/>It will not import "
+"a script that already exist in the plugin."
+msgstr ""

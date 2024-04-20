@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-19 13:03-0500\n"
+"POT-Creation-Date: 2024-04-20 11:11-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Language-Team: Galician (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/gl/)\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Add"
+msgstr ""
 
 msgid "Create"
 msgstr ""
@@ -41,6 +44,21 @@ msgstr ""
 msgid "Edit shell script."
 msgstr ""
 
+msgid "Import"
+msgstr ""
+
+msgid "Import existing scripts ..."
+msgstr ""
+
+msgid "Import one"
+msgstr ""
+
+msgid "Import one existing script ..."
+msgstr ""
+
+msgid "Path"
+msgstr ""
+
 msgid "Schedule"
 msgstr ""
 
@@ -48,4 +66,14 @@ msgid "Scripts"
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid ""
+"This will import one or more scripts in the selected folder.<br/>It will not"
+" import any scripts that already exist in the plugin."
+msgstr ""
+
+msgid ""
+"This will import one script from the specified path.<br/>It will not import "
+"a script that already exist in the plugin."
 msgstr ""
