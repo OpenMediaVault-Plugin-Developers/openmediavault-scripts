@@ -4,5 +4,5 @@ data:
   path: "services.scripts.scripts"
   text: _("Scripts")
   position: 20
-  icon: mdi:script-text-play-outline
+  icon: mdi:script-text-outline
   url: "/services/scripts/scripts"
