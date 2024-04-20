@@ -34,6 +34,8 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->registerMethod('setScript');
         $this->registerMethod('deleteScript');
         $this->registerMethod('doRun');
+        $this->registerMethod('importExistingFolder');
+        $this->registerMethod('importExistingOne');
 
         $this->registerMethod('getJobList');
         $this->registerMethod('getJob');
@@ -221,6 +223,119 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 return $output;
             }
         );
+    }
+
+    public function importExistingFolder($params, $context)
+    {
+        // Verify that shared folder is set
+        $sfpath = $this->getScriptsPath($context);
+        // Get the configuration object.
+        $db = \OMV\Config\Database::getInstance();
+        $path = $params['path'];
+        $path = (substr($path, 0, 1) == '/' ? $path : '/' . $path);
+        $path = rtrim($path, '/');
+        // get files with sh, ksh, or py extensions
+        $sh = glob($path . "/*.sh");
+        $ksh = glob($path . "/*.ksh");
+        $py = glob($path . "/*.py");
+        // get files in path that have no extension but have a shell or python shebang
+        $cmdArgs = [];
+        $cmdArgs[] = 'grep';
+        $cmdArgs[] = '-l';
+        $cmdArgs[] = '-E \'^#!/(bin|usr/bin)/(bash|sh|ksh|python)|^#!/usr/bin/env (python|sh|bash|ksh)\'';
+        $cmdArgs[] = sprintf('%s/*', $path);
+        $cmdArgs[] = '| awk NF';
+        $cmd = new \OMV\System\Process($cmdArgs);
+        $cmd->execute($search);
+        // combine lists and make unique
+        $all = array_merge($sh, $ksh, $py, $search);
+        $allu = array_unique(array_filter($all));
+        foreach ($allu as $script) {
+            if (!is_file($script)) {
+                continue;
+            }
+            $name = pathinfo($script, PATHINFO_FILENAME);
+            $ext = pathinfo($script, PATHINFO_EXTENSION);
+            if ($ext == '') {
+                $ext = $this->getExtForFile($script);
+            }
+            $body = file_get_contents($script);
+            // set object values
+            $object = new \OMV\Config\ConfigObject("conf.service.scripts.file");
+            $object->set('name', $name);
+            $object->set('ext', $ext);
+            $object->set('body', $body);
+            $object->set('testargs', '');
+            // Set the configuration object.
+            try {
+                $db->assertIsUnique($object, 'name');
+            } catch (Exception $e) {
+                continue;
+            }
+            $db->set($object);
+        }
+    }
+
+    public function importExistingOne($params, $context)
+    {
+        // Verify that shared folder is set
+        $sfpath = $this->getScriptsPath($context);
+        // Get the configuration object.
+        $db = \OMV\Config\Database::getInstance();
+        $path = $params['path'];
+        $path = '/' . ltrim($path, '/');
+        if (!is_file($path)) {
+            throw new \OMV\ExecException(gettext('Specified path is not a file!'));
+        }
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        $exts = ['sh', 'ksh', 'py'];
+        if (!in_array($ext, $exts)) {
+            $ext = $this->getExtForFile($path);
+        }
+        if (in_array($ext, $exts)) {
+            $name = pathinfo($path, PATHINFO_FILENAME);
+            $body = file_get_contents($path);
+            // set object values
+            $object = new \OMV\Config\ConfigObject("conf.service.scripts.file");
+            $object->set('name', $name);
+            $object->set('ext', $ext);
+            $object->set('body', $body);
+            $object->set('testargs', '');
+            // Set the configuration object.
+            $db->assertIsUnique($object, 'name');
+            $db->set($object);
+        }
+    }
+
+    private function getExtForFile($path)
+    {
+        $ext = '';
+        // search shebangs for script types
+        $search = ['/sh', '/bash', '/ksh', '/python', 'env sh', 'env bash', 'env ksh', 'env python'];
+        // Read the first line of the file
+        $line1 = trim(fgets(fopen($path, 'r')));
+        foreach ($search as $pattern) {
+            if (strpos($line1, $pattern) !== false) {
+                switch ($pattern) {
+                    case '/sh':
+                    case '/bash':
+                    case 'env sh':
+                    case 'env bash':
+                        $ext = 'sh';
+                        break;
+                    case '/ksh':
+                    case 'env ksh':
+                        $ext = 'ksh';
+                        break;
+                    case '/python':
+                    case 'env python':
+                        $ext = 'py';
+                        break;
+                }
+                break;
+            }
+        }
+        return ($ext);
     }
 
     public function getJobList($params, $context)

@@ -36,12 +36,69 @@ data:
         hidden: true
         cellTemplateName: copyToClipboard
     actions:
-      - type: iconButton
-        icon: mdi:text-box-plus-outline
-        tooltip: _('Add')
-        execute:
-          type: url
-          url: '/services/scripts/script/create'
+      - type: menu
+        icon: add
+        tooltip: _("Add")
+        actions:
+          - text: _("Add")
+            icon: mdi:text-box-plus-outline
+            execute:
+              type: url
+              url: '/services/scripts/script/create'
+          - text: _("Import")
+            icon: mdi:import
+            execute:
+              type: formDialog
+              formDialog:
+                title: _("Import existing scripts ...")
+                fields:
+                  - type: hint
+                    hintType: info
+                    text: _("This will import one or more scripts in the selected folder.<br/>It will not import any scripts that already exist in the plugin.")
+                  - type: hidden
+                    name: rootfsref
+                    value: "79684322-3eac-11ea-a974-63a080abab18"
+                    submitValue: false
+                  - type: folderBrowser
+                    name: path
+                    label: _("Path")
+                    value: ""
+                    dirType: mntent
+                    dirRefIdField: rootfsref
+                    validators:
+                      required: true
+                buttons:
+                  submit:
+                    text: _("Import")
+                    execute:
+                      type: request
+                      request:
+                        service: Scripts
+                        method: importExistingFolder
+          - text: _("Import one")
+            icon: mdi:file-import-outline
+            execute:
+              type: formDialog
+              formDialog:
+                title: _("Import one existing script ...")
+                fields:
+                  - type: hint
+                    hintType: info
+                    text: _("This will import one script from the specified path.<br/>It will not import a script that already exist in the plugin.")
+                  - type: textInput
+                    name: path
+                    label: _("Path")
+                    value: ""
+                    validators:
+                      required: true
+                buttons:
+                  submit:
+                    text: _("Import")
+                    execute:
+                      type: request
+                      request:
+                        service: Scripts
+                        method: importExistingOne
       - type: iconButton
         icon: edit
         tooltip: _('Edit')
