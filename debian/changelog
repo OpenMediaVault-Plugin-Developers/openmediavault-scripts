@@ -1,3 +1,11 @@
+openmediavault-scripts (7.0.1) stable; urgency=low
+
+  * Add sharerootfs as a dependency
+  * Add email and comment columns to Schedule datatable
+  * Change schedule comment to tag input
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Fri, 03 May 2024 09:42:15 -0500
+
 openmediavault-scripts (7.0) stable; urgency=low
 
   * Initial commit
