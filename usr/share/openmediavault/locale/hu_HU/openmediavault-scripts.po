@@ -22,7 +22,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Add"
-msgstr ""
+msgstr "Hozzáadás"
 
 msgid "Create"
 msgstr "Létrehozás"
@@ -31,13 +31,13 @@ msgid "Created scheduled job."
 msgstr "Ütemezett feladat létrehozva."
 
 msgid "Created script."
-msgstr ""
+msgstr "Parancsfájl létrehozva."
 
 msgid "Created shell script."
 msgstr "Shell parancsfájl létrehozva."
 
 msgid "Docs"
-msgstr ""
+msgstr "Leírások"
 
 msgid "Edit"
 msgstr "Szerkesztés"
@@ -49,19 +49,19 @@ msgid "Edit shell script."
 msgstr "Shell parancsfájl szerkesztése."
 
 msgid "Import"
-msgstr ""
+msgstr "Importálás"
 
 msgid "Import existing scripts ..."
-msgstr ""
+msgstr "Meglévő parancsfájlok importálása…"
 
 msgid "Import one"
-msgstr ""
+msgstr "Egy importálása"
 
 msgid "Import one existing script ..."
-msgstr ""
+msgstr "Egy meglévő parancsfájl importálása…"
 
 msgid "Path"
-msgstr ""
+msgstr "Útvonal"
 
 msgid "Schedule"
 msgstr "Ütemezés"
@@ -76,8 +76,13 @@ msgid ""
 "This will import one or more scripts in the selected folder.<br/>It will not"
 " import any scripts that already exist in the plugin."
 msgstr ""
+"Egy vagy több parancsfájlt importálása fog megtörténni a kiválasztott "
+"mappába.<br/> Nem importál olyan parancsfájlokat, amelyek már léteznek a "
+"bővítményben."
 
 msgid ""
 "This will import one script from the specified path.<br/>It will not import "
 "a script that already exist in the plugin."
 msgstr ""
+"Egy parancsfájlt importálása fog megtörténni a kiválasztott mappába.<br/> "
+"Nem importál olyan parancsfájlt, amely már létezik a bővítményben."
