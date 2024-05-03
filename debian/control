@@ -10,6 +10,7 @@ Homepage: http://omv-extras.org/
 Package: openmediavault-scripts
 Architecture: all
 Depends: openmediavault (>= 7),
+         openmediavault-sharerootfs,
          ${misc:Depends}
 Description: OpenMediaVault scripts plugin
  lightweight plugin to maintain and execute docker-scripts files.
