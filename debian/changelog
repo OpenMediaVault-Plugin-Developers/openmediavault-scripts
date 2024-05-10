@@ -1,6 +1,8 @@
 openmediavault-scripts (7.0.2) stable; urgency=low
 
   * Add .txt and .conf extensions
+  * Add python editing window
+  * Add shellcheck button to check sh and ksh scripts
 
  -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Fri, 10 May 2024 11:43:53 -0500
 
