@@ -1,0 +1,7 @@
+version: "1.0"
+type: route
+data:
+  url: "/services/scripts/script/createpy"
+  title: _("Create")
+  notificationTitle: _("Created script.")
+  component: omv-services-scripts-scriptpy-form-page

@@ -1,0 +1,8 @@
+version: "1.0"
+type: route
+data:
+  url: "/services/scripts/script/editpy/:uuid"
+  title: _("Edit")
+  editing: true
+  notificationTitle: _("Edit shell script.")
+  component: omv-services-scripts-scriptpy-form-page

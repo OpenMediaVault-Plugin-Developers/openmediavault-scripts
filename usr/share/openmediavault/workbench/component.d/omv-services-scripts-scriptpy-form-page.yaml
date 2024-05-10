@@ -1,7 +1,7 @@
 version: '1.0'
 type: component
 data:
-  name: omv-services-scripts-script-form-page
+  name: omv-services-scripts-scriptpy-form-page
   type: formPage
   config:
     request:
@@ -27,19 +27,16 @@ data:
       - type: select
         name: ext
         label: _('Extension')
-        value: 'sh'
-        disabled: '{{ _routeConfig.data.editing | toboolean }}'
+        value: 'py'
+        disabled: true
         store:
           data:
-            - [ 'conf', 'conf' ]
-            - [ 'ksh', 'ksh' ]
-            - [ 'sh', 'sh' ]
-            - [ 'txt', 'txt' ]
+            - [ 'py', 'python' ]
       - type: codeEditor
         name: body
         label: _('Script')
         value: ''
-        language: 'shell'
+        language: 'python'
       - type: textInput
         name: testargs
         label: _('Testing arguments')

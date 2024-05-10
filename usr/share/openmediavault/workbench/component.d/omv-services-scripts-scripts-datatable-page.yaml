@@ -45,6 +45,11 @@ data:
             execute:
               type: url
               url: '/services/scripts/script/create'
+          - text: _("Add Python")
+            icon: mdi:text-box-plus-outline
+            execute:
+              type: url
+              url: '/services/scripts/script/createpy'
           - text: _("Import")
             icon: mdi:import
             execute:
@@ -105,9 +110,28 @@ data:
         enabledConstraints:
           minSelected: 1
           maxSelected: 1
+          constraint:
+            - operator: ne
+              arg0:
+                prop: ext
+              arg1: 'py'
         execute:
           type: url
           url: '/services/scripts/script/edit/{{ _selected[0].uuid }}'
+      - type: iconButton
+        icon: edit
+        tooltip: _('Edit python')
+        enabledConstraints:
+          minSelected: 1
+          maxSelected: 1
+          constraint:
+            - operator: eq
+              arg0:
+                prop: ext
+              arg1: 'py'
+        execute:
+          type: url
+          url: '/services/scripts/script/editpy/{{ _selected[0].uuid }}'
       - template: delete
         confirmationDialogConfig:
           template: confirmation-danger
