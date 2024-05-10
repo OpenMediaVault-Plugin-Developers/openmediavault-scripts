@@ -34,6 +34,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->registerMethod('setScript');
         $this->registerMethod('deleteScript');
         $this->registerMethod('doRun');
+        $this->registerMethod('doShellcheck');
         $this->registerMethod('importExistingFolder');
         $this->registerMethod('importExistingOne');
 
@@ -218,6 +219,34 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                     $cmdLine = $cmd->getCommandLine();
                     if (0 !== $this->exec($cmdLine, $output, $bgOutputFilename)) {
                         throw new \OMV\ExecException($cmdLine, $output);
+                    }
+                }
+                return $output;
+            }
+        );
+    }
+
+    public function doShellcheck($params, $context)
+    {
+        // Validate the RPC caller context.
+        $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        // Get the configuration object.
+        $db = \OMV\Config\Database::getInstance();
+        $script = $db->get('conf.service.scripts.file', $params['uuid']);
+        $sfpath = $this->getScriptsPath($context);
+        return $this->execBgProc(function($bgStatusFilename, $bgOutputFilename)
+            use ($script, $params, $sfpath) {
+                $output = [];
+                $scriptFile = sprintf('%s/%s.%s', $sfpath, $script->get('name'), $script->get('ext'));
+                if (file_exists($scriptFile)) {
+                    $cmdArgs = [];
+                    $cmdArgs[] = 'shellcheck';
+                    $cmdArgs[] = $scriptFile;
+                    $cmd = new \OMV\System\Process($cmdArgs);
+                    $cmd->setRedirect2to1();
+                    $cmdLine = $cmd->getCommandLine();
+                    if (0 == $this->exec($cmdLine, $output, $bgOutputFilename)) {
+                        file_put_contents($bgOutputFilename, 'No errors found.' . PHP_EOL, FILE_APPEND);
                     }
                 }
                 return $output;

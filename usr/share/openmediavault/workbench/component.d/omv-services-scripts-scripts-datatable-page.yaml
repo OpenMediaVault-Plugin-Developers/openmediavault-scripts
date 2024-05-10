@@ -144,6 +144,35 @@ data:
             params:
               uuid: '{{ _selected[0].uuid }}'
       - type: iconButton
+        icon: mdi:text-box-check-outline
+        tooltip: _('Shellcheck')
+        enabledConstraints:
+          minSelected: 1
+          maxSelected: 1
+          constraint:
+            - operator: or
+              arg0:
+                operator: eq
+                arg0:
+                  prop: ext
+                arg1: 'sh'
+              arg1:
+                operator: eq
+                arg0:
+                  prop: ext
+                arg1: 'ksh'
+        execute:
+          type: taskDialog
+          taskDialog:
+            config:
+              title: _('Shellcheck ...')
+              startOnInit: true
+              request:
+                service: Scripts
+                method: doShellcheck
+                params:
+                  uuid: '{{ _selected[0].uuid }}'
+      - type: iconButton
         icon: mdi:play-outline
         tooltip: _('Run')
         enabledConstraints:
