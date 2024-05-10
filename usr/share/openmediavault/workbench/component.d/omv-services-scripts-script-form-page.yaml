@@ -31,9 +31,11 @@ data:
         disabled: '{{ _routeConfig.data.editing | toboolean }}'
         store:
           data:
+            - [ 'conf', 'conf' ]
             - [ 'ksh', 'ksh' ]
             - [ 'py', 'python' ]
             - [ 'sh', 'sh' ]
+            - [ 'txt', 'text' ]
       - type: codeEditor
         name: body
         label: _('Script')

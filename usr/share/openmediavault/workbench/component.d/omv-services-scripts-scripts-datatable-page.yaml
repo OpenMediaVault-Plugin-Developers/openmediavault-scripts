@@ -125,6 +125,18 @@ data:
         enabledConstraints:
           minSelected: 1
           maxSelected: 1
+          constraint:
+            - operator: and
+              arg0:
+                operator: ne
+                arg0:
+                  prop: ext
+                arg1: 'conf'
+              arg1:
+                operator: ne
+                arg0:
+                  prop: ext
+                arg1: 'txt'
         execute:
           type: taskDialog
           taskDialog:
