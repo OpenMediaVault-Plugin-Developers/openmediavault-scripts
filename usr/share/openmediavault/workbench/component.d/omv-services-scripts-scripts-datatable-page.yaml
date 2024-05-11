@@ -104,34 +104,39 @@ data:
                       request:
                         service: Scripts
                         method: importExistingOne
-      - type: iconButton
-        icon: mdi:text-box-edit
-        tooltip: _('Edit')
+      - type: menu
+        icon: edit
+        tooltip: _("Edit")
         enabledConstraints:
           minSelected: 1
           maxSelected: 1
-          constraint:
-            - operator: ne
-              arg0:
-                prop: ext
-              arg1: 'py'
-        execute:
-          type: url
-          url: '/services/scripts/script/edit/{{ _selected[0].uuid }}'
-      - type: iconButton
-        icon: mdi:text-box-edit-outline
-        tooltip: _('Edit python')
-        enabledConstraints:
-          minSelected: 1
-          maxSelected: 1
-          constraint:
-            - operator: eq
-              arg0:
-                prop: ext
-              arg1: 'py'
-        execute:
-          type: url
-          url: '/services/scripts/script/editpy/{{ _selected[0].uuid }}'
+        actions:
+          - text: _("Edit")
+            icon: mdi:text-box-edit
+            enabledConstraints:
+              minSelected: 1
+              maxSelected: 1
+              constraint:
+                - operator: ne
+                  arg0:
+                    prop: ext
+                  arg1: 'py'
+            execute:
+              type: url
+              url: '/services/scripts/script/edit/{{ _selected[0].uuid }}'
+          - text: _("Edit Python")
+            icon: mdi:text-box-edit-outline
+            enabledConstraints:
+              minSelected: 1
+              maxSelected: 1
+              constraint:
+                - operator: eq
+                  arg0:
+                    prop: ext
+                  arg1: 'py'
+            execute:
+              type: url
+              url: '/services/scripts/script/editpy/{{ _selected[0].uuid }}'
       - template: delete
         confirmationDialogConfig:
           template: confirmation-danger
