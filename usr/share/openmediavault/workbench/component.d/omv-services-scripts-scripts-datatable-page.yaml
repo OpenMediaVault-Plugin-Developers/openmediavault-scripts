@@ -105,7 +105,7 @@ data:
                         service: Scripts
                         method: importExistingOne
       - type: iconButton
-        icon: edit
+        icon: mdi:text-box-edit
         tooltip: _('Edit')
         enabledConstraints:
           minSelected: 1
@@ -119,7 +119,7 @@ data:
           type: url
           url: '/services/scripts/script/edit/{{ _selected[0].uuid }}'
       - type: iconButton
-        icon: edit
+        icon: mdi:text-box-edit-outline
         tooltip: _('Edit python')
         enabledConstraints:
           minSelected: 1
@@ -144,32 +144,25 @@ data:
             params:
               uuid: '{{ _selected[0].uuid }}'
       - type: iconButton
-        icon: mdi:text-box-check-outline
-        tooltip: _('Shellcheck')
+        icon: mdi:playlist-check
+        tooltip: _('Check using Shellcheck or pylint')
         enabledConstraints:
           minSelected: 1
           maxSelected: 1
           constraint:
-            - operator: or
+            - operator: in
               arg0:
-                operator: eq
-                arg0:
-                  prop: ext
-                arg1: 'sh'
-              arg1:
-                operator: eq
-                arg0:
-                  prop: ext
-                arg1: 'ksh'
+                prop: ext
+              arg1: ['sh','ksh','py']
         execute:
           type: taskDialog
           taskDialog:
             config:
-              title: _('Shellcheck ...')
+              title: _('Check ...')
               startOnInit: true
               request:
                 service: Scripts
-                method: doShellcheck
+                method: doCheck
                 params:
                   uuid: '{{ _selected[0].uuid }}'
       - type: iconButton

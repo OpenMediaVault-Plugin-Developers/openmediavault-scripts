@@ -34,7 +34,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->registerMethod('setScript');
         $this->registerMethod('deleteScript');
         $this->registerMethod('doRun');
-        $this->registerMethod('doShellcheck');
+        $this->registerMethod('doCheck');
         $this->registerMethod('importExistingFolder');
         $this->registerMethod('importExistingOne');
 
@@ -226,7 +226,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         );
     }
 
-    public function doShellcheck($params, $context)
+    public function doCheck($params, $context)
     {
         // Validate the RPC caller context.
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
@@ -240,7 +240,17 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 $scriptFile = sprintf('%s/%s.%s', $sfpath, $script->get('name'), $script->get('ext'));
                 if (file_exists($scriptFile)) {
                     $cmdArgs = [];
-                    $cmdArgs[] = 'shellcheck';
+                    switch ($script->get('ext')) {
+                        case 'sh':
+                        case 'ksh':
+                            file_put_contents($bgOutputFilename, 'Using shellcheck ...' . PHP_EOL . PHP_EOL, FILE_APPEND);
+                            $cmdArgs[] = 'shellcheck';
+                            break;
+                        case 'py':
+                            file_put_contents($bgOutputFilename, 'Using pylint ...' . PHP_EOL . PHP_EOL, FILE_APPEND);
+                            $cmdArgs[] = 'pylint';
+                            break;
+                    }
                     $cmdArgs[] = $scriptFile;
                     $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
