@@ -267,6 +267,8 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $sh = glob($path . "/*.sh");
         $ksh = glob($path . "/*.ksh");
         $py = glob($path . "/*.py");
+        $conf = glob($path . "/*.conf");
+        $txt = glob($path . "/*.txt");
         // get files in path that have no extension but have a shell or python shebang
         $cmdArgs = [];
         $cmdArgs[] = 'grep';
@@ -277,7 +279,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $cmd = new \OMV\System\Process($cmdArgs);
         $cmd->execute($search);
         // combine lists and make unique
-        $all = array_merge($sh, $ksh, $py, $search);
+        $all = array_merge($sh, $ksh, $py, $conf, $txt, $search);
         $allu = array_unique(array_filter($all));
         foreach ($allu as $script) {
             if (!is_file($script)) {
@@ -288,7 +290,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             if ($ext == '') {
                 $ext = $this->getExtForFile($script);
             }
-            $body = file_get_contents($script);
+            $body = trim(file_get_contents($script));
             // set object values
             $object = new \OMV\Config\ConfigObject("conf.service.scripts.file");
             $object->set('name', $name);
@@ -317,13 +319,13 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             throw new \OMV\ExecException(gettext('Specified path is not a file!'));
         }
         $ext = pathinfo($path, PATHINFO_EXTENSION);
-        $exts = ['sh', 'ksh', 'py'];
+        $exts = ['sh', 'ksh', 'py', 'conf', 'txt'];
         if (!in_array($ext, $exts)) {
             $ext = $this->getExtForFile($path);
         }
         if (in_array($ext, $exts)) {
             $name = pathinfo($path, PATHINFO_FILENAME);
-            $body = file_get_contents($path);
+            $body = trim(file_get_contents($path));
             // set object values
             $object = new \OMV\Config\ConfigObject("conf.service.scripts.file");
             $object->set('name', $name);
