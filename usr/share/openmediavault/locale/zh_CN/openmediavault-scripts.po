@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-20 11:11-0500\n"
+"POT-Creation-Date: 2024-05-10 12:39-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: songming <by@songming.me>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/zh_CN/)\n"
@@ -23,6 +23,9 @@ msgstr ""
 
 msgid "Add"
 msgstr "添加"
+
+msgid "Add Python"
+msgstr ""
 
 msgid "Create"
 msgstr "创建"

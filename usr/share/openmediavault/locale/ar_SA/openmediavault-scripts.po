@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-20 11:11-0500\n"
+"POT-Creation-Date: 2024-05-10 12:39-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Language-Team: Arabic (Saudi Arabia) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/ar_SA/)\n"
 "MIME-Version: 1.0\n"
@@ -18,6 +18,9 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 
 msgid "Add"
+msgstr ""
+
+msgid "Add Python"
 msgstr ""
 
 msgid "Create"
