@@ -1,3 +1,9 @@
+openmediavault-scripts (7.0.7) stable; urgency=low
+
+  * Fix filesize issue before changes are applied
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Sun, 12 May 2024 10:34:14 -0500
+
 openmediavault-scripts (7.0.6) stable; urgency=low
 
   * Add script download option
