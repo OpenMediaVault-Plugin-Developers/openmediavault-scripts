@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-10 12:39-0500\n"
+"POT-Creation-Date: 2024-05-12 10:18-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: Marcelo Esteves <marcelopge@gmail.com>, 2024\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/pt_BR/)\n"
@@ -26,6 +26,12 @@ msgid "Add"
 msgstr ""
 
 msgid "Add Python"
+msgstr ""
+
+msgid "Add from URL"
+msgstr ""
+
+msgid "Add from url"
 msgstr ""
 
 msgid "Create"
@@ -43,14 +49,23 @@ msgstr "Shell script criado."
 msgid "Docs"
 msgstr ""
 
+msgid "Downloading script ..."
+msgstr ""
+
 msgid "Edit"
 msgstr "Editar"
+
+msgid "Edit Python"
+msgstr ""
 
 msgid "Edit scheduled job."
 msgstr "Editar a tarefa agendada."
 
 msgid "Edit shell script."
 msgstr "Editar shell script."
+
+msgid "File size"
+msgstr ""
 
 msgid "Import"
 msgstr ""
@@ -64,11 +79,20 @@ msgstr ""
 msgid "Import one existing script ..."
 msgstr ""
 
+msgid "Name"
+msgstr ""
+
+msgid "Optional. Will use downloaded name if one is not specified."
+msgstr ""
+
 msgid "Path"
 msgstr ""
 
 msgid "Schedule"
 msgstr "Agendar"
+
+msgid "Script has been added."
+msgstr ""
 
 msgid "Scripts"
 msgstr "Scripts"
@@ -84,4 +108,7 @@ msgstr ""
 msgid ""
 "This will import one script from the specified path.<br/>It will not import "
 "a script that already exist in the plugin."
+msgstr ""
+
+msgid "URL"
 msgstr ""

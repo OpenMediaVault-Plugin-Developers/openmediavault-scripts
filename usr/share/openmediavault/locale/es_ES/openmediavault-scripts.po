@@ -3,22 +3,18 @@
 # This file is distributed under the same license as the openmediavault-scripts package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
-# Translators:
-# Raul Fernandez Garcia <raulfg3@gmail.com>, 2024
-# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-10 12:39-0500\n"
+"POT-Creation-Date: 2024-05-12 10:18-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
-"Last-Translator: Raul Fernandez Garcia <raulfg3@gmail.com>, 2024\n"
-"Language-Team: Spanish (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/es/)\n"
+"Language-Team: Spanish (Spain) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
+"Language: es_ES\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 msgid "Add"
@@ -27,29 +23,44 @@ msgstr ""
 msgid "Add Python"
 msgstr ""
 
+msgid "Add from URL"
+msgstr ""
+
+msgid "Add from url"
+msgstr ""
+
 msgid "Create"
-msgstr "Crear"
+msgstr ""
 
 msgid "Created scheduled job."
-msgstr "Trabajo programado creado."
+msgstr ""
 
 msgid "Created script."
 msgstr ""
 
 msgid "Created shell script."
-msgstr "Script de shell creado."
+msgstr ""
 
 msgid "Docs"
 msgstr ""
 
+msgid "Downloading script ..."
+msgstr ""
+
 msgid "Edit"
-msgstr "Editar"
+msgstr ""
+
+msgid "Edit Python"
+msgstr ""
 
 msgid "Edit scheduled job."
-msgstr "Editar trabajo programado."
+msgstr ""
 
 msgid "Edit shell script."
-msgstr "Editar shell script."
+msgstr ""
+
+msgid "File size"
+msgstr ""
 
 msgid "Import"
 msgstr ""
@@ -63,17 +74,26 @@ msgstr ""
 msgid "Import one existing script ..."
 msgstr ""
 
+msgid "Name"
+msgstr ""
+
+msgid "Optional. Will use downloaded name if one is not specified."
+msgstr ""
+
 msgid "Path"
 msgstr ""
 
 msgid "Schedule"
-msgstr "Programador"
+msgstr ""
+
+msgid "Script has been added."
+msgstr ""
 
 msgid "Scripts"
-msgstr "Scripts"
+msgstr ""
 
 msgid "Settings"
-msgstr "Opciones"
+msgstr ""
 
 msgid ""
 "This will import one or more scripts in the selected folder.<br/>It will not"
@@ -83,4 +103,7 @@ msgstr ""
 msgid ""
 "This will import one script from the specified path.<br/>It will not import "
 "a script that already exist in the plugin."
+msgstr ""
+
+msgid "URL"
 msgstr ""

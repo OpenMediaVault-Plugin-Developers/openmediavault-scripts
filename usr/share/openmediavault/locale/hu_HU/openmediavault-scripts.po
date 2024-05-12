@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-10 12:39-0500\n"
+"POT-Creation-Date: 2024-05-12 10:18-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: Gyuris Gellért <jobel@ujevangelizacio.hu>, 2024\n"
 "Language-Team: Hungarian (Hungary) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/hu_HU/)\n"
@@ -25,6 +25,12 @@ msgid "Add"
 msgstr "Hozzáadás"
 
 msgid "Add Python"
+msgstr ""
+
+msgid "Add from URL"
+msgstr ""
+
+msgid "Add from url"
 msgstr ""
 
 msgid "Create"
@@ -42,14 +48,23 @@ msgstr "Shell parancsfájl létrehozva."
 msgid "Docs"
 msgstr "Leírások"
 
+msgid "Downloading script ..."
+msgstr ""
+
 msgid "Edit"
 msgstr "Szerkesztés"
+
+msgid "Edit Python"
+msgstr ""
 
 msgid "Edit scheduled job."
 msgstr "Ütemezett feladat szerkesztése."
 
 msgid "Edit shell script."
 msgstr "Shell parancsfájl szerkesztése."
+
+msgid "File size"
+msgstr ""
 
 msgid "Import"
 msgstr "Importálás"
@@ -63,11 +78,20 @@ msgstr "Egy importálása"
 msgid "Import one existing script ..."
 msgstr "Egy meglévő parancsfájl importálása…"
 
+msgid "Name"
+msgstr ""
+
+msgid "Optional. Will use downloaded name if one is not specified."
+msgstr ""
+
 msgid "Path"
 msgstr "Útvonal"
 
 msgid "Schedule"
 msgstr "Ütemezés"
+
+msgid "Script has been added."
+msgstr ""
 
 msgid "Scripts"
 msgstr "Parancsfájlok"
@@ -89,3 +113,6 @@ msgid ""
 msgstr ""
 "Egy parancsfájlt importálása fog megtörténni a kiválasztott mappába.<br/> "
 "Nem importál olyan parancsfájlt, amely már létezik a bővítményben."
+
+msgid "URL"
+msgstr ""

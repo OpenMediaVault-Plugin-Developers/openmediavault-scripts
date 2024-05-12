@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-10 12:39-0500\n"
+"POT-Creation-Date: 2024-05-12 10:18-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: songming <by@songming.me>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/zh_CN/)\n"
@@ -25,6 +25,12 @@ msgid "Add"
 msgstr "添加"
 
 msgid "Add Python"
+msgstr ""
+
+msgid "Add from URL"
+msgstr ""
+
+msgid "Add from url"
 msgstr ""
 
 msgid "Create"
@@ -42,14 +48,23 @@ msgstr "创建 shell 脚本。"
 msgid "Docs"
 msgstr "文档"
 
+msgid "Downloading script ..."
+msgstr ""
+
 msgid "Edit"
 msgstr "编辑"
+
+msgid "Edit Python"
+msgstr ""
 
 msgid "Edit scheduled job."
 msgstr "编辑计划任务。"
 
 msgid "Edit shell script."
 msgstr "编辑 shell 脚本。"
+
+msgid "File size"
+msgstr ""
 
 msgid "Import"
 msgstr "导入"
@@ -63,11 +78,20 @@ msgstr "导入一个"
 msgid "Import one existing script ..."
 msgstr "导入一个已有脚本 ..."
 
+msgid "Name"
+msgstr ""
+
+msgid "Optional. Will use downloaded name if one is not specified."
+msgstr ""
+
 msgid "Path"
 msgstr "路径"
 
 msgid "Schedule"
 msgstr "计划"
+
+msgid "Script has been added."
+msgstr ""
 
 msgid "Scripts"
 msgstr "脚本"
@@ -84,3 +108,6 @@ msgid ""
 "This will import one script from the specified path.<br/>It will not import "
 "a script that already exist in the plugin."
 msgstr "这将从指定路径导入一个脚本。<br/>这将不会导入一个已经在插件中存在的脚本。"
+
+msgid "URL"
+msgstr ""
