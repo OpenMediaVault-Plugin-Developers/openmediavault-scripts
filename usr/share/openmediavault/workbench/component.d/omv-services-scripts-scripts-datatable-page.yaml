@@ -29,6 +29,12 @@ data:
         prop: testargs
         flexGrow: 1
         sortable: true
+      - name: _("File size")
+        prop: filesize
+        flexGrow: 1
+        sortable: true
+        cellTemplateName: template
+        cellTemplateConfig: '{{ filesize | tobytes | binaryunit | notavailable("-") }}'
       - name: _('Full Path')
         prop: fullpath
         flexGrow: 2
@@ -50,6 +56,33 @@ data:
             execute:
               type: url
               url: '/services/scripts/script/createpy'
+          - text: _("Add from URL")
+            icon: mdi:download-box-outline
+            execute:
+              type: formDialog
+              formDialog:
+                title: _('Add script from URL ...')
+                fields:
+                  - type: textInput
+                    name: url
+                    label: _("URL")
+                    validators:
+                      required: true
+                  - type: textInput
+                    name: name
+                    label: _("Name")
+                    value: ""
+                    hint: _("Optional. Will use downloaded name if one is not specified.")
+                buttons:
+                  submit:
+                    text: _('Add')
+                    execute:
+                      type: request
+                      request:
+                        service: Scripts
+                        method: addUrl
+                        progressMessage: _("Downloading script ...")
+                        successNotification: _("Script has been added.")
           - text: _("Import")
             icon: mdi:import
             execute:

@@ -35,6 +35,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->registerMethod('deleteScript');
         $this->registerMethod('doRun');
         $this->registerMethod('doCheck');
+        $this->registerMethod('addUrl');
         $this->registerMethod('importExistingFolder');
         $this->registerMethod('importExistingOne');
 
@@ -109,6 +110,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         foreach ($objects as $objectk => &$objectv) {
             $fullpath = sprintf('%s/%s.%s', $sfpath, $objectv->get('name'), $objectv->get('ext'));
             $objectv->add('fullpath', 'string', $fullpath);
+            $objectv->add('filesize', 'integer', filesize($fullpath));
             $objectsAssoc[] = $objectv->getAssoc();
         }
         // Filter the result.
@@ -200,12 +202,14 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
     {
         // Validate the RPC caller context.
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        // Validate the parameters of the RPC service method.
+        $this->validateMethodParams($params, 'rpc.common.objectuuid');
         // Get the configuration object.
         $db = \OMV\Config\Database::getInstance();
         $script = $db->get('conf.service.scripts.file', $params['uuid']);
         $sfpath = $this->getScriptsPath($context);
         return $this->execBgProc(function($bgStatusFilename, $bgOutputFilename)
-            use ($script, $params, $sfpath) {
+            use ($script, $sfpath) {
                 $output = [];
                 $scriptFile = sprintf('%s/%s.%s', $sfpath, $script->get('name'), $script->get('ext'));
                 if (file_exists($scriptFile)) {
@@ -230,12 +234,14 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
     {
         // Validate the RPC caller context.
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        // Validate the parameters of the RPC service method.
+        $this->validateMethodParams($params, 'rpc.common.objectuuid');
         // Get the configuration object.
         $db = \OMV\Config\Database::getInstance();
         $script = $db->get('conf.service.scripts.file', $params['uuid']);
         $sfpath = $this->getScriptsPath($context);
         return $this->execBgProc(function($bgStatusFilename, $bgOutputFilename)
-            use ($script, $params, $sfpath) {
+            use ($script, $sfpath) {
                 $output = [];
                 $scriptFile = sprintf('%s/%s.%s', $sfpath, $script->get('name'), $script->get('ext'));
                 if (file_exists($scriptFile)) {
@@ -264,8 +270,56 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         );
     }
 
+    public function addUrl($params, $context)
+    {
+        // Validate the RPC caller context.
+        $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        // Validate the parameters of the RPC service method.
+        $this->validateMethodParams($params, 'rpc.scripts.addurl');
+        // Verify that shared folder is set
+        $sfpath = $this->getScriptsPath($context);
+        // download script
+        $url = $params['url'];
+        $script = file_get_contents($url);
+        // Put script in a temp file
+        if ($script !== false) {
+            if ($params['name'] == '') {
+                $name = pathinfo($url, PATHINFO_FILENAME);
+            } else {
+                $name = $params['name'];
+            }
+            $ext = pathinfo($url, PATHINFO_EXTENSION);
+            $tmpname = tempnam(sys_get_temp_dir(), "omv_scripts_");
+            unlink($tmpname);
+            $tmp = sprintf('%s.%s', $tmpname, $ext);
+            file_put_contents($tmp, $script);
+            $exts = ['sh', 'ksh', 'py', 'conf', 'txt'];
+            if (!in_array($ext, $exts)) {
+                $ext = $this->getExtForFile($tmp);
+            }
+            // remove temp file
+            unlink($tmp);
+            if (in_array($ext, $exts)) {
+                // set object values
+                $db = \OMV\Config\Database::getInstance();
+                $object = new \OMV\Config\ConfigObject("conf.service.scripts.file");
+                $object->set('name', $name);
+                $object->set('ext', $ext);
+                $object->set('body', trim($script));
+                $object->set('testargs', '');
+                // Set the configuration object.
+                $db->assertIsUnique($object, 'name');
+                $db->set($object);
+            }
+        }
+    }
+
     public function importExistingFolder($params, $context)
     {
+        // Validate the RPC caller context.
+        $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        // Validate the parameters of the RPC service method.
+        $this->validateMethodParams($params, 'rpc.scripts.import');
         // Verify that shared folder is set
         $sfpath = $this->getScriptsPath($context);
         // Get the configuration object.
@@ -319,6 +373,10 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
 
     public function importExistingOne($params, $context)
     {
+        // Validate the RPC caller context.
+        $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        // Validate the parameters of the RPC service method.
+        $this->validateMethodParams($params, 'rpc.scripts.import');
         // Verify that shared folder is set
         $sfpath = $this->getScriptsPath($context);
         // Get the configuration object.
@@ -350,7 +408,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
 
     private function getExtForFile($path)
     {
-        $ext = '';
+        $ext = 'txt';
         // search shebangs for script types
         $search = ['/sh', '/bash', '/ksh', '/python', 'env sh', 'env bash', 'env ksh', 'env python'];
         // Read the first line of the file
