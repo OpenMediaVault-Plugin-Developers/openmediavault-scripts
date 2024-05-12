@@ -110,7 +110,10 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         foreach ($objects as $objectk => &$objectv) {
             $fullpath = sprintf('%s/%s.%s', $sfpath, $objectv->get('name'), $objectv->get('ext'));
             $objectv->add('fullpath', 'string', $fullpath);
-            $objectv->add('filesize', 'integer', filesize($fullpath));
+            $filesize = filesize($fullpath);
+            if ($filesize !== false && $filesize > -1) {
+                $objectv->add('filesize', 'integer', $filesize);
+            }
             $objectsAssoc[] = $objectv->getAssoc();
         }
         // Filter the result.
