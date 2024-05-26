@@ -36,6 +36,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->registerMethod('doRun');
         $this->registerMethod('doCheck');
         $this->registerMethod('addUrl');
+        $this->registerMethod("importChanges");
         $this->registerMethod('importExistingFolder');
         $this->registerMethod('importExistingOne');
 
@@ -315,6 +316,29 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 $db->set($object);
             }
         }
+    }
+
+    public function importChanges($params, $context)
+    {
+        // Validate the RPC caller context.
+        $this->validateMethodContext($context, ["role" => OMV_ROLE_ADMINISTRATOR]);
+        // Validate the parameters of the RPC service method.
+        $this->validateMethodParams($params, 'rpc.common.objectuuid');
+        // Get the configuration object.
+        $db = \OMV\Config\Database::getInstance();
+        $script = $db->get('conf.service.scripts.file', $params['uuid']);
+        $sfpath = $this->getScriptsPath($context);
+        $scriptFile = sprintf('%s/%s.%s', $sfpath, $script->get('name'), $script->get('ext'));
+        if (file_exists($scriptFile)) {
+            // Get file content
+            $body = trim(file_get_contents($scriptFile));
+            // Update object
+            $script->set('body', $body);
+            // Set the configuration object.
+            $db->set($script);
+        }
+        // Return the configuration object.
+        return $script->getAssoc();
     }
 
     public function importExistingFolder($params, $context)

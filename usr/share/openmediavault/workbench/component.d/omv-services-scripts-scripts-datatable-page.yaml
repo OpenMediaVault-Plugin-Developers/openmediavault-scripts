@@ -137,6 +137,23 @@ data:
                       request:
                         service: Scripts
                         method: importExistingOne
+          - text: _("Sync changes from file")
+            icon: mdi:file-sync-outline
+            confirmationDialogConfig:
+              template: confirmation-danger
+              message: _("Are you sure you want to sync changes from the file?")
+            execute:
+              type: request
+              request:
+                service: Scripts
+                method: importChanges
+                params:
+                  uuid: "{{ _selected[0].uuid }}"
+                progressMessage: _("Syncing changes from file ...")
+                successNotification: _("Changes have been synced from file.")
+            enabledConstraints:
+              minSelected: 1
+              maxSelected: 1
       - type: menu
         icon: edit
         tooltip: _("Edit")
