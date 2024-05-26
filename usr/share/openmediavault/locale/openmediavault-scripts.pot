@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-12 10:18-0500\n"
+"POT-Creation-Date: 2024-05-26 14:33-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,6 +27,12 @@ msgid "Add from URL"
 msgstr ""
 
 msgid "Add from url"
+msgstr ""
+
+msgid "Are you sure you want to sync changes from the file?"
+msgstr ""
+
+msgid "Changes have been synced from file."
 msgstr ""
 
 msgid "Create"
@@ -93,6 +99,12 @@ msgid "Scripts"
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Sync changes from file"
+msgstr ""
+
+msgid "Syncing changes from file ..."
 msgstr ""
 
 msgid "This will import one or more scripts in the selected folder.<br/>It will not import any scripts that already exist in the plugin."
