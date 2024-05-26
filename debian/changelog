@@ -1,3 +1,9 @@
+openmediavault-scripts (7.0.8) stable; urgency=low
+
+  * Add option to sync changes from the file
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Sun, 26 May 2024 14:31:11 -0500
+
 openmediavault-scripts (7.0.7) stable; urgency=low
 
   * Fix filesize issue before changes are applied
