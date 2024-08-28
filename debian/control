@@ -15,4 +15,4 @@ Depends: openmediavault (>= 7.1),
          shellcheck,
          ${misc:Depends}
 Description: OpenMediaVault scripts plugin
- lightweight plugin to maintain and execute docker-scripts files.
+ lightweight plugin to maintain and execute shell and python scripts.
