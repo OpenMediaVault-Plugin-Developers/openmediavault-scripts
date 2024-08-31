@@ -493,8 +493,14 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->validateMethodParams($params, 'rpc.common.objectuuid');
         // Get the configuration object.
         $db = \OMV\Config\Database::getInstance();
-        $object = $db->get('conf.service.scripts.job', $params['uuid']);
-        return $object->getAssoc();
+        $result = $db->getAssoc('conf.service.scripts.job', $params['uuid']);
+        // Convert comma separated list into an array.
+        $result['minute'] = explode(",", $result['minute']);
+        $result['hour'] = explode(",", $result['hour']);
+        $result['dayofmonth'] = explode(",", $result['dayofmonth']);
+        $result['month'] = explode(",", $result['month']);
+        $result['dayofweek'] = explode(",", $result['dayofweek']);
+        return $result;
     }
 
     public function setJob($params, $context)
@@ -503,6 +509,12 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
         // Validate the parameters of the RPC service method.
         $this->validateMethodParams($params, 'rpc.scripts.setjob');
+        // Convert array into a comma separated list.
+        $params['minute'] = implode(",", $params['minute']);
+        $params['hour'] = implode(",", $params['hour']);
+        $params['dayofmonth'] = implode(",", $params['dayofmonth']);
+        $params['month'] = implode(",", $params['month']);
+        $params['dayofweek'] = implode(",", $params['dayofweek']);
         // Prepare the configuration object.
         $object = new \OMV\Config\ConfigObject('conf.service.scripts.job');
         $db = \OMV\Config\Database::getInstance();
