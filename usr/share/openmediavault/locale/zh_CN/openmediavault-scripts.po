@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-26 14:33-0500\n"
+"POT-Creation-Date: 2024-09-02 09:41-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: songming <by@songming.me>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/zh_CN/)\n"
@@ -25,19 +25,19 @@ msgid "Add"
 msgstr "添加"
 
 msgid "Add Python"
-msgstr ""
+msgstr "添加 Python"
 
 msgid "Add from URL"
-msgstr ""
+msgstr "从 URL 地址添加"
 
 msgid "Add from url"
-msgstr ""
+msgstr "从 url 地址添加"
 
 msgid "Are you sure you want to sync changes from the file?"
-msgstr ""
+msgstr "您确定要同步文件的变更？"
 
 msgid "Changes have been synced from file."
-msgstr ""
+msgstr "文件变更已同步。"
 
 msgid "Create"
 msgstr "创建"
@@ -55,13 +55,13 @@ msgid "Docs"
 msgstr "文档"
 
 msgid "Downloading script ..."
-msgstr ""
+msgstr "下载脚本中 ..."
 
 msgid "Edit"
 msgstr "编辑"
 
 msgid "Edit Python"
-msgstr ""
+msgstr "编辑 Python"
 
 msgid "Edit scheduled job."
 msgstr "编辑计划任务。"
@@ -70,7 +70,7 @@ msgid "Edit shell script."
 msgstr "编辑 shell 脚本。"
 
 msgid "File size"
-msgstr ""
+msgstr "文件大小"
 
 msgid "Import"
 msgstr "导入"
@@ -85,10 +85,10 @@ msgid "Import one existing script ..."
 msgstr "导入一个已有脚本 ..."
 
 msgid "Name"
-msgstr ""
+msgstr "名称"
 
 msgid "Optional. Will use downloaded name if one is not specified."
-msgstr ""
+msgstr "选项。如果没有指定将使用已下载的名字。"
 
 msgid "Path"
 msgstr "路径"
@@ -97,7 +97,7 @@ msgid "Schedule"
 msgstr "计划"
 
 msgid "Script has been added."
-msgstr ""
+msgstr "脚本已添加"
 
 msgid "Scripts"
 msgstr "脚本"
@@ -106,9 +106,12 @@ msgid "Settings"
 msgstr "设置"
 
 msgid "Sync changes from file"
-msgstr ""
+msgstr "同步文件中的变更"
 
 msgid "Syncing changes from file ..."
+msgstr "同步文件变更中 ..."
+
+msgid "The field should only contain * or a comma separated list of values."
 msgstr ""
 
 msgid ""
@@ -122,4 +125,4 @@ msgid ""
 msgstr "这将从指定路径导入一个脚本。<br/>这将不会导入一个已经在插件中存在的脚本。"
 
 msgid "URL"
-msgstr ""
+msgstr "URL"

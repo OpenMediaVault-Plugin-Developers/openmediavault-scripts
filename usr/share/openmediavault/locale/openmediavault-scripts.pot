@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-26 14:33-0500\n"
+"POT-Creation-Date: 2024-09-02 09:41-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -105,6 +105,9 @@ msgid "Sync changes from file"
 msgstr ""
 
 msgid "Syncing changes from file ..."
+msgstr ""
+
+msgid "The field should only contain * or a comma separated list of values."
 msgstr ""
 
 msgid "This will import one or more scripts in the selected folder.<br/>It will not import any scripts that already exist in the plugin."

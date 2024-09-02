@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-26 14:33-0500\n"
+"POT-Creation-Date: 2024-09-02 09:41-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: Andi Chandler <andi@gowling.com>, 2024\n"
 "Language-Team: English (United Kingdom) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/en_GB/)\n"
@@ -34,10 +34,10 @@ msgid "Add from url"
 msgstr "Add from URL"
 
 msgid "Are you sure you want to sync changes from the file?"
-msgstr ""
+msgstr "Are you sure you want to sync changes from the file?"
 
 msgid "Changes have been synced from file."
-msgstr ""
+msgstr "Changes have been synced from file."
 
 msgid "Create"
 msgstr "Create"
@@ -106,9 +106,12 @@ msgid "Settings"
 msgstr "Settings"
 
 msgid "Sync changes from file"
-msgstr ""
+msgstr "Sync changes from file"
 
 msgid "Syncing changes from file ..."
+msgstr "Syncing changes from file ..."
+
+msgid "The field should only contain * or a comma separated list of values."
 msgstr ""
 
 msgid ""

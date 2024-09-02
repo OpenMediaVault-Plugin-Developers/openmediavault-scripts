@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-26 14:33-0500\n"
+"POT-Creation-Date: 2024-09-02 09:41-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: Gyuris Gellért <jobel@ujevangelizacio.hu>, 2024\n"
 "Language-Team: Hungarian (Hungary) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/hu_HU/)\n"
@@ -25,19 +25,19 @@ msgid "Add"
 msgstr "Hozzáadás"
 
 msgid "Add Python"
-msgstr ""
+msgstr "Python hozzáadása"
 
 msgid "Add from URL"
-msgstr ""
+msgstr "Hozzáadás URL-ről"
 
 msgid "Add from url"
-msgstr ""
+msgstr "Hozzáadás URL-ről"
 
 msgid "Are you sure you want to sync changes from the file?"
-msgstr ""
+msgstr "Biztosan szinkronizálni szeretné a fájlból származó módosításokat?"
 
 msgid "Changes have been synced from file."
-msgstr ""
+msgstr "Módosítások szinkronizálva a fájlból."
 
 msgid "Create"
 msgstr "Létrehozás"
@@ -55,13 +55,13 @@ msgid "Docs"
 msgstr "Leírások"
 
 msgid "Downloading script ..."
-msgstr ""
+msgstr "Parancsfájl letöltése…"
 
 msgid "Edit"
 msgstr "Szerkesztés"
 
 msgid "Edit Python"
-msgstr ""
+msgstr "Python szerkesztése"
 
 msgid "Edit scheduled job."
 msgstr "Ütemezett feladat szerkesztése."
@@ -70,7 +70,7 @@ msgid "Edit shell script."
 msgstr "Shell parancsfájl szerkesztése."
 
 msgid "File size"
-msgstr ""
+msgstr "Fájlméret"
 
 msgid "Import"
 msgstr "Importálás"
@@ -85,10 +85,10 @@ msgid "Import one existing script ..."
 msgstr "Egy meglévő parancsfájl importálása…"
 
 msgid "Name"
-msgstr ""
+msgstr "Név"
 
 msgid "Optional. Will use downloaded name if one is not specified."
-msgstr ""
+msgstr "Választható. A letöltött nevet használja, ha nincs megadva."
 
 msgid "Path"
 msgstr "Útvonal"
@@ -97,7 +97,7 @@ msgid "Schedule"
 msgstr "Ütemezés"
 
 msgid "Script has been added."
-msgstr ""
+msgstr "Parancsfájl hozzáadva."
 
 msgid "Scripts"
 msgstr "Parancsfájlok"
@@ -106,9 +106,12 @@ msgid "Settings"
 msgstr "Beállítások"
 
 msgid "Sync changes from file"
-msgstr ""
+msgstr "Módosítások szinkronizálása fájlból"
 
 msgid "Syncing changes from file ..."
+msgstr "Módosítások szinkronizálása fájlból…"
+
+msgid "The field should only contain * or a comma separated list of values."
 msgstr ""
 
 msgid ""
@@ -127,4 +130,4 @@ msgstr ""
 "Nem importál olyan parancsfájlt, amely már létezik a bővítményben."
 
 msgid "URL"
-msgstr ""
+msgstr "URL"

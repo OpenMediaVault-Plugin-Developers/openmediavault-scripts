@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-26 14:33-0500\n"
+"POT-Creation-Date: 2024-09-02 09:41-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: kochin <kochinc@outlook.com>, 2024\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/zh_TW/)\n"
@@ -22,22 +22,22 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "Add"
-msgstr ""
+msgstr "新增"
 
 msgid "Add Python"
-msgstr ""
+msgstr "新增 Python"
 
 msgid "Add from URL"
-msgstr ""
+msgstr "從 URL 新增"
 
 msgid "Add from url"
-msgstr ""
+msgstr "從 url 新增"
 
 msgid "Are you sure you want to sync changes from the file?"
-msgstr ""
+msgstr "您確定要從檔案將變更同步進來嗎？"
 
 msgid "Changes have been synced from file."
-msgstr ""
+msgstr "變更已從檔案同步進來。"
 
 msgid "Create"
 msgstr "建立"
@@ -46,22 +46,22 @@ msgid "Created scheduled job."
 msgstr "建立預定工作。"
 
 msgid "Created script."
-msgstr ""
+msgstr "建立腳本程式。"
 
 msgid "Created shell script."
 msgstr "建立指令殼腳本程式。"
 
 msgid "Docs"
-msgstr ""
+msgstr "說明文件"
 
 msgid "Downloading script ..."
-msgstr ""
+msgstr "下載腳本程式中 ..."
 
 msgid "Edit"
 msgstr "編輯"
 
 msgid "Edit Python"
-msgstr ""
+msgstr "編輯 Python"
 
 msgid "Edit scheduled job."
 msgstr "編輯預定工作。"
@@ -70,34 +70,34 @@ msgid "Edit shell script."
 msgstr "編輯指令殼腳本程式。"
 
 msgid "File size"
-msgstr ""
+msgstr "檔案大小"
 
 msgid "Import"
-msgstr ""
+msgstr "匯入"
 
 msgid "Import existing scripts ..."
-msgstr ""
+msgstr "匯入現存腳本程式中 ..."
 
 msgid "Import one"
-msgstr ""
+msgstr "匯入一份"
 
 msgid "Import one existing script ..."
-msgstr ""
+msgstr "匯入一份現存腳本程式中 ..."
 
 msgid "Name"
-msgstr ""
+msgstr "名稱"
 
 msgid "Optional. Will use downloaded name if one is not specified."
-msgstr ""
+msgstr "可選項。若沒指定，則將使用下載名稱。"
 
 msgid "Path"
-msgstr ""
+msgstr "路徑"
 
 msgid "Schedule"
 msgstr "預定工作"
 
 msgid "Script has been added."
-msgstr ""
+msgstr "腳本程式已被加入。"
 
 msgid "Scripts"
 msgstr "腳本程式"
@@ -106,20 +106,23 @@ msgid "Settings"
 msgstr "設定"
 
 msgid "Sync changes from file"
-msgstr ""
+msgstr "從檔案將變更同步進來"
 
 msgid "Syncing changes from file ..."
+msgstr "從檔案將變更同步進來中 ..."
+
+msgid "The field should only contain * or a comma separated list of values."
 msgstr ""
 
 msgid ""
 "This will import one or more scripts in the selected folder.<br/>It will not"
 " import any scripts that already exist in the plugin."
-msgstr ""
+msgstr "這將匯入一份或多份在所選檔案夾中的腳本程式。<br/>它不會把已經存在於插件的腳本程式匯入。"
 
 msgid ""
 "This will import one script from the specified path.<br/>It will not import "
 "a script that already exist in the plugin."
-msgstr ""
+msgstr "這將匯入一份在所選路徑中的腳本程式。<br/>它不會把已經存在於插件的腳本程式匯入。"
 
 msgid "URL"
-msgstr ""
+msgstr "URL"

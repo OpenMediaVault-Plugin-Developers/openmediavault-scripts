@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-26 14:33-0500\n"
+"POT-Creation-Date: 2024-09-02 09:41-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: Kevin Leclercq <nuklearstriker@gmail.com>, 2024\n"
 "Language-Team: French (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/fr/)\n"
@@ -109,6 +109,9 @@ msgid "Sync changes from file"
 msgstr ""
 
 msgid "Syncing changes from file ..."
+msgstr ""
+
+msgid "The field should only contain * or a comma separated list of values."
 msgstr ""
 
 msgid ""

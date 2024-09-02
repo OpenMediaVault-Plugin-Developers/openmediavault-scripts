@@ -3,13 +3,17 @@
 # This file is distributed under the same license as the openmediavault-scripts package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
+# Translators:
+# Raul Fernandez Garcia <raulfg3@gmail.com>, 2024
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-26 14:33-0500\n"
+"POT-Creation-Date: 2024-09-02 09:41-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
+"Last-Translator: Raul Fernandez Garcia <raulfg3@gmail.com>, 2024\n"
 "Language-Team: Spanish (Spain) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,104 +22,111 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 msgid "Add"
-msgstr ""
+msgstr "Añadir"
 
 msgid "Add Python"
-msgstr ""
+msgstr "Añadir Python"
 
 msgid "Add from URL"
-msgstr ""
+msgstr "Añadir desde URL"
 
 msgid "Add from url"
-msgstr ""
+msgstr "Añadir desde url"
 
 msgid "Are you sure you want to sync changes from the file?"
-msgstr ""
+msgstr "¿Está seguro de que desea sincronizar los cambios del archivo?"
 
 msgid "Changes have been synced from file."
-msgstr ""
+msgstr "Los cambios han sido sincronizados desde el archivo."
 
 msgid "Create"
-msgstr ""
+msgstr "Crear"
 
 msgid "Created scheduled job."
-msgstr ""
+msgstr "Trabajo programado creado."
 
 msgid "Created script."
-msgstr ""
+msgstr "Script creado."
 
 msgid "Created shell script."
-msgstr ""
+msgstr "Script de shell creado."
 
 msgid "Docs"
-msgstr ""
+msgstr "Documentación"
 
 msgid "Downloading script ..."
-msgstr ""
+msgstr "Descargando el script ..."
 
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 msgid "Edit Python"
-msgstr ""
+msgstr "Editar Python"
 
 msgid "Edit scheduled job."
-msgstr ""
+msgstr "Editar trabajo programado."
 
 msgid "Edit shell script."
-msgstr ""
+msgstr "Editar shell script."
 
 msgid "File size"
-msgstr ""
+msgstr "Tamaño archivo"
 
 msgid "Import"
-msgstr ""
+msgstr "Importar"
 
 msgid "Import existing scripts ..."
-msgstr ""
+msgstr "Importando script existente ..."
 
 msgid "Import one"
-msgstr ""
+msgstr "Importar uno"
 
 msgid "Import one existing script ..."
-msgstr ""
+msgstr "Importando un script existente ..."
 
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 msgid "Optional. Will use downloaded name if one is not specified."
-msgstr ""
+msgstr "Opcional. Utilizará el nombre descargado si no se especifica ninguno."
 
 msgid "Path"
-msgstr ""
+msgstr "Ruta"
 
 msgid "Schedule"
-msgstr ""
+msgstr "Programador"
 
 msgid "Script has been added."
-msgstr ""
+msgstr "Script añadido."
 
 msgid "Scripts"
-msgstr ""
+msgstr "Scripts"
 
 msgid "Settings"
-msgstr ""
+msgstr "Opciones"
 
 msgid "Sync changes from file"
-msgstr ""
+msgstr "Sincronizar cambio desde el archivo"
 
 msgid "Syncing changes from file ..."
+msgstr "Sincronizando cambios desde el archivo ..."
+
+msgid "The field should only contain * or a comma separated list of values."
 msgstr ""
 
 msgid ""
 "This will import one or more scripts in the selected folder.<br/>It will not"
 " import any scripts that already exist in the plugin."
 msgstr ""
+"Esto importará uno o más scripts en la carpeta seleccionada. <br/> No "
+"importará ningún script que ya exista en el complemento."
 
 msgid ""
 "This will import one script from the specified path.<br/>It will not import "
 "a script that already exist in the plugin."
 msgstr ""
+"Esto importará un script de la ruta especificada. <br/>No importará un "
+"script que ya exista en el plugin."
 
 msgid "URL"
-msgstr ""
+msgstr "URL"
