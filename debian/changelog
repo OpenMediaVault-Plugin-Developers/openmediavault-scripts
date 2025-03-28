@@ -1,3 +1,9 @@
+openmediavault-scripts (7.1) stable; urgency=low
+
+  * Add version control (git) to see changes to scripts
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Fri, 28 Mar 2025 12:32:37 -0500
+
 openmediavault-scripts (7.0.9) stable; urgency=low
 
   * Allow multiple minutes, hours, days, months for scheduled jobs
