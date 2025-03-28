@@ -39,6 +39,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->registerMethod("importChanges");
         $this->registerMethod('importExistingFolder');
         $this->registerMethod('importExistingOne');
+        $this->registerMethod('doGit');
 
         $this->registerMethod('getJobList');
         $this->registerMethod('getJob');
@@ -62,6 +63,53 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             throw new \OMV\Exception(gettext('Please set shared folder for script storage.'));
         }
         return ($sfpath);
+    }
+
+    private function addAndCommit($context, $files, $msg)
+    {
+        $sfpath = $this->getScriptsPath($context);
+        if (is_dir(sprintf("%s/.git", $sfpath))) {
+            // git add to repo
+            $cmdArgs = [];
+            $cmdArgs[] = sprintf("-C '%s'", $sfpath);
+            $cmdArgs[] = 'add';
+            $cmdArgs = array_merge($cmdArgs, $files);
+            $cmd = new \OMV\System\Process('git', $cmdArgs);
+            $cmd->setQuiet(true);
+            $cmd->execute($output, $exitStatus);
+            // git commit change
+            $cmdArgs = [];
+            $cmdArgs[] = sprintf("-C '%s'", $sfpath);
+            $cmdArgs[] = 'commit';
+            $cmdArgs[] = sprintf("-m 'Updated %s on %s'", $msg, date('Y.m.d h:i:sa'));
+            $cmd = new \OMV\System\Process('git', $cmdArgs);
+            $cmd->setQuiet(true);
+            $cmd->execute($output, $exitStatus);
+        }
+    }
+
+    private function removeAndCommit($context, $files, $msg)
+    {
+        $sfpath = $this->getScriptsPath($context);
+        if (is_dir(sprintf("%s/.git", $sfpath))) {
+            // git add to repo
+            $cmdArgs = [];
+            $cmdArgs[] = sprintf("-C '%s'", $sfpath);
+            $cmdArgs[] = 'rm';
+            $cmdArgs[] = '-f';
+            $cmdArgs = array_merge($cmdArgs, $files);
+            $cmd = new \OMV\System\Process('git', $cmdArgs);
+            $cmd->setQuiet(true);
+            $cmd->execute($output, $exitStatus);
+            // git commit change
+            $cmdArgs = [];
+            $cmdArgs[] = sprintf("-C '%s'", $sfpath);
+            $cmdArgs[] = 'commit';
+            $cmdArgs[] = sprintf("-m 'Removed %s on %s'", $msg, date('Y.m.d h:i:sa'));
+            $cmd = new \OMV\System\Process('git', $cmdArgs);
+            $cmd->setQuiet(true);
+            $cmd->execute($output, $exitStatus);
+        }
     }
 
     public function get($params, $context)
@@ -168,6 +216,9 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             'modules' => [ 'scripts' ],
             'force' => TRUE
         ], $context);
+        // add and commit to git if repo exists
+        $file = sprintf("%s.%s", $params['name'], $params['ext']);
+        $this->addAndCommit($context, [$file], $file);
         // Return the configuration object.
         return $object->getAssoc();
     }
@@ -193,7 +244,10 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         }
         // Delete the configuration object.
         $object = $db->get('conf.service.scripts.file', $params['uuid']);
-        $scriptFile = sprintf('%s/%s.%s', $sfpath, $object->get('name'), $object->get('ext'));
+        // remove file from git and delete file
+        $file = sprintf('%s.%s', $object->get('name'), $object->get('ext'));
+        $scriptFile = sprintf('%s/%s', $sfpath, $file);
+        $this->removeAndCommit($context, [$file], $file);
         if (file_exists($scriptFile)) {
             unlink($scriptFile);
         }
@@ -462,6 +516,56 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             }
         }
         return ($ext);
+    }
+
+    public function doGit($params, $context)
+    {
+        // Validate the RPC caller context.
+        $this->validateMethodContext($context, ["role" => OMV_ROLE_ADMINISTRATOR]);
+        // Get the configuration object.
+        $db = \OMV\Config\Database::getInstance();
+        $object = false;
+        if (is_uuid($params['uuid'])) {
+            $object = $db->get("conf.service.scripts.file", $params['uuid']);
+        }
+        $sfpath = $this->getScriptsPath($context);
+        return $this->execBgProc(function($bgStatusFilename, $bgOutputFilename)
+            use ($object, $params, $sfpath, $db) {
+                $cmdArgs = [];
+                switch ($params['command']) {
+                    case 'init':
+                        $cmdArgs = [];
+                        $cmdArgs[] = sprintf("'%s'", $sfpath);
+                        $cmd = new \OMV\System\Process('omv-scripts-init-git', $cmdArgs);
+                        break;
+                    case 'diff':
+                        if (!$object)
+                            return [];
+
+                        $script = $object->get('name');
+                        $ext = $object->get('ext');
+
+                        $cmdArgs = [];
+                        $cmdArgs[] = sprintf("-C '%s'", $sfpath);
+                        $cmdArgs[] = 'log';
+                        $cmdArgs[] = '-p';
+                        $cmdArgs[] = '--';
+                        $cmdArgs[] = sprintf('%s.%s', $script, $ext);
+                        $cmd = new \OMV\System\Process('git', $cmdArgs);
+                        break;
+                }
+                $cmd->setRedirect2to1();
+                $cmd->setQuiet(true);
+                $cmdLine = $cmd->getCommandLine();
+                file_put_contents($bgOutputFilename, $cmdLine . PHP_EOL . PHP_EOL, FILE_APPEND);
+                $exitStatus = $this->exec($cmdLine, $output, $bgOutputFilename);
+                if ($exitStatus !== 0) {
+                    $errmsg = PHP_EOL . PHP_EOL . '*** ERROR #' . $exitStatus . ' ***' . PHP_EOL . PHP_EOL;
+                    file_put_contents($bgOutputFilename, $errmsg, FILE_APPEND);
+                }
+                return $output;
+            }
+        );
     }
 
     public function getJobList($params, $context)

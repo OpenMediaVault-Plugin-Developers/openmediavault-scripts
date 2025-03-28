@@ -248,6 +248,45 @@ data:
                 method: doRun
                 params:
                   uuid: '{{ _selected[0].uuid }}'
+      - type: menu
+        icon: mdi:source-branch
+        tooltip: _("Git")
+        actions:
+          - text: _("init git repo")
+            icon: mdi:git
+            confirmationDialogConfig:
+              template: confirmation-danger
+              message: _("Are you sure you want to create a new git repo?  This will erase all history!")
+            execute:
+              type: taskDialog
+              taskDialog:
+                config:
+                  title: _("Initialize new git repo ...")
+                  startOnInit: true
+                  request:
+                    service: Scripts
+                    method: doGit
+                    params:
+                      uuid: ""
+                      command: "init"
+          - text: _("show file changes")
+            icon: mdi:vector-difference
+            execute:
+              type: taskDialog
+              taskDialog:
+                config:
+                  title: _("Show all file changes ...")
+                  startOnInit: true
+                  autoScroll: false
+                  request:
+                    service: Scripts
+                    method: doGit
+                    params:
+                      uuid: "{{ _selected[0].uuid }}"
+                      command: "diff"
+            enabledConstraints:
+              minSelected: 1
+              maxSelected: 1
       - type: iconButton
         icon: mdi:link
         tooltip: _("Docs")

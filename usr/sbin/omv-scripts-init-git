@@ -1,0 +1,52 @@
+#!/bin/bash
+
+. /usr/share/openmediavault/scripts/helper-functions
+
+sfpath="${1}"
+
+if [ ! -d "${sfpath}" ]; then
+  echo "Invalid directory: ${sfpath}"
+  exit 1
+fi
+
+echo "Removing old .git directory (if found) ..."
+rm -rf "${sfpath}/.git"
+
+echo "Initializing new git repo ..."
+GIT_OPTIONAL_LOCKS=0 git init --initial-branch=main "${sfpath}" --quiet
+
+echo "Configuring ..."
+git -C "${sfpath}" config user.name "openmediavault-scripts"
+git -C "${sfpath}" config user.email "scripts@localhost"
+
+echo "Adding existing files to repo ..."
+cd "${sfpath}" || exit 2
+
+# Add scripts from OMV database
+xpath="/config/services/scripts/files/file"
+count=$(omv_config_get_count "${xpath}")
+
+for (( index=1; index<=count; index++ )); do
+  pos="${xpath}[position()=${index}]"
+  if omv_config_exists "${pos}/name"; then
+    sname="$(omv_config_get "${pos}/name")"
+    ext="$(omv_config_get "${pos}/ext")"
+
+    if [ -n "${sname}" ] && [ -n "${ext}" ]; then
+      spath="${sname}.${ext}"
+      [ -f "${spath}" ] && git add "${spath}"
+    fi
+  fi
+done
+
+# Commit if there are staged changes
+if git diff --cached --quiet; then
+  echo "No files to commit."
+else
+  git commit --quiet --message "initial commit"
+  echo "Initial commit created."
+fi
+
+echo "Done."
+
+exit 0
