@@ -163,7 +163,9 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             if ($filesize !== false && $filesize > -1) {
                 $objectv->add('filesize', 'integer', $filesize);
             }
-            $objectsAssoc[] = $objectv->getAssoc();
+            $assoc = $objectv->getAssoc();
+            unset($assoc['body']);
+            $objectsAssoc[] = $assoc;
         }
         // Filter the result.
         return $this->applyFilter($objectsAssoc, $params['start'], $params['limit'],
