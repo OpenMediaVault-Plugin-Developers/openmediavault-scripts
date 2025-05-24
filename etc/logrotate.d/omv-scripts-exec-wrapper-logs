@@ -1,0 +1,15 @@
+/var/log/omv-scripts-exec-tracker.log {
+    missingok
+    rotate 90
+    monthly
+    compress
+    notifempty
+}
+
+/var/log/omv-scripts-exec-tracker/*.log {
+    missingok
+    rotate 90
+    monthly
+    compress
+    notifempty
+}
