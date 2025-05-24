@@ -1,0 +1,56 @@
+#!/bin/bash
+#
+# shellcheck disable=
+#
+# Copyright (c) 2025 openmediavault plugin developers
+#
+# This file is licensed under the terms of the GNU General Public
+# License version 2. This program is licensed "as is" without any
+# warranty of any kind, whether express or implied.
+#
+# version: 0.0.1
+
+export LC_ALL=C.UTF-8
+
+logCsv=/var/log/omv-scripts-exec-tracker.log
+logDir=/var/log/omv-scripts-exec-tracker
+mkdir -p "${logDir}"
+
+script="$1"; shift
+scriptName=$(basename "${script}")
+
+ts=$(date '+%Y%m%d-%H%M%S')
+runLog="${logDir}/${scriptName}.${ts}.log"
+
+startTime=$(date +%s%N)
+startHuman=$(date '+%Y-%m-%d %H:%M:%S.%3N')
+
+"${script}" "$@" 2>&1 | tee "${runLog}"
+rc=${PIPESTATUS[0]}
+
+endTime=$(date +%s%N)
+endHuman=$(date '+%Y-%m-%d %H:%M:%S.%3N')
+
+diffNs=$((endTime - startTime))
+
+if [ "${diffNs}" -lt 1000000000 ]; then
+  dur="$((diffNs/1000000))ms"
+else
+  dur="$((diffNs/1000000000))s"
+fi
+
+id=$(uuid)
+logSize=$(stat -c%s "${runLog}")
+
+printf '%s,%s,%s,%s,%d,%s,%s,%d\n' \
+  "${id}" \
+  "${startHuman}" \
+  "${endHuman}" \
+  "${scriptName}" \
+  "${rc}" \
+  "${dur}" \
+  "${runLog}" \
+  "${logSize}" \
+>> "${logCsv}"
+
+exit "${rc}"
