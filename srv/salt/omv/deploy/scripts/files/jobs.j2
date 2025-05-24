@@ -1,5 +1,5 @@
 {%- set separator = ' ' -%}
-{{ pillar['headers']['multiline'] -}}
+{{ pillar['headers']['multiline'] }}
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 # m h dom mon dow user    command
@@ -13,7 +13,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 {%- else -%}
 @{{ job.execution }}
 {%- endif -%}
-{{ separator }}root{{ separator }}'{{ sfpath }}/{{ script.name }}.{{ script.ext }}'{{ separator }}{{ job.args }}
+{{ separator }}root{{ separator }}/usr/sbin/omv-scripts-exec-wrapper '{{ sfpath }}/{{ script.name }}.{{ script.ext }}' {{ job.args }}
 {%- if not job.sendemail | to_bool -%}
 {{ separator }}>/dev/null 2>&1
 {%- else -%}

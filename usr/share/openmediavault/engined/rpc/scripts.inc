@@ -274,6 +274,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 $scriptFile = sprintf('%s/%s.%s', $sfpath, $script->get('name'), $script->get('ext'));
                 if (file_exists($scriptFile)) {
                     $cmdArgs = [];
+                    $cmdArgs[] = '/usr/sbin/omv-scripts-exec-wrapper';
                     $cmdArgs[] = $scriptFile;
                     if (strlen($script->get('testargs')) > 0) {
                         $cmdArgs[] = $script->get('testargs');
@@ -662,6 +663,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 $scriptFile = sprintf('%s/%s.%s', $sfpath, $script->get('name'), $script->get('ext'));
                 if (file_exists($scriptFile)) {
                     $cmdArgs = [];
+                    $cmdArgs[] = '/usr/sbin/omv-scripts-exec-wrapper';
                     $cmdArgs[] = $scriptFile;
                     $args = $job->get('args');
                     if (strlen($args) > 0) {
