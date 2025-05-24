@@ -46,6 +46,10 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->registerMethod('setJob');
         $this->registerMethod('deleteJob');
         $this->registerMethod('doJob');
+
+        $this->registerMethod('getLogList');
+        $this->registerMethod('deleteLog');
+        $this->registerMethod('viewLog');
     }
 
     private function getScriptsPath($context)
@@ -677,6 +681,79 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                     }
                 } else {
                     throw new \OMV\ExecException('Script not found - ' . $scriptFile);
+                }
+                return $output;
+            }
+        );
+    }
+
+    public function getLogList($params, $context)
+    {
+        // Validate the RPC caller context.
+        $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        // Validate the parameters of the RPC service method.
+        $this->validateMethodParams($params, 'rpc.common.getlist');
+        // read log as csv
+        $objectsAssoc = [];
+        $logFile = '/var/log/omv-scripts-exec-tracker.log';
+        if (file_exists($logFile) && is_readable($logFile)) {
+            $fh = fopen($logFile, 'r');
+            while (($row = fgetcsv($fh)) !== false) {
+                list($id, $start, $stop, $script, $exitcode, $duration, $runlog, $logsize) = $row;
+                $objectsAssoc[] = [
+                    'id' => $id,
+                    'script' => $script,
+                    'start' => $start,
+                    'stop' => $stop,
+                    'exitcode' => (int)$exitcode,
+                    'duration' => $duration,
+                    'runlog' => $runlog,
+                    'logsize' => (int)$logsize,
+                ];
+            }
+            fclose($fh);
+        }
+        // Filter the result.
+        return $this->applyFilter($objectsAssoc, $params['start'], $params['limit'],
+            $params['sortfield'], $params['sortdir'], $params['search']);
+    }
+
+    public function deleteLog($params, $context)
+    {
+        // Validate the RPC caller context.
+        $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        // delete id from log file
+        $cmdArgs = [];
+        $cmdArgs[] = 'sed';
+        $cmdArgs[] = '-i';
+        $cmdArgs[] = sprintf("'/^%s/d'", $params['id']);
+        $cmdArgs[] = '/var/log/omv-scripts-exec-tracker.log';
+        $cmd = new \OMV\System\Process($cmdArgs);
+        $cmd->execute($search);
+        // delete log file
+        unlink($params['runlog']);
+    }
+
+    public function viewLog($params, $context)
+    {
+        // Validate the RPC caller context.
+        $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        return $this->execBgProc(function($bgStatusFilename, $bgOutputFilename)
+            use ($params) {
+                $output = [];
+                $runlog = $params['runlog'];
+                if (file_exists($runlog)) {
+                    $cmdArgs = [];
+                    $cmdArgs[] = 'cat';
+                    $cmdArgs[] = $runlog;
+                    $cmd = new \OMV\System\Process($cmdArgs);
+                    $cmd->setRedirect2to1();
+                    $cmdLine = $cmd->getCommandLine();
+                    if (0 !== $this->exec($cmdLine, $output, $bgOutputFilename)) {
+                        throw new \OMV\ExecException($cmdLine, $output);
+                    }
+                } else {
+                    throw new \OMV\ExecException('run log not found - ' . $runlog);
                 }
                 return $output;
             }

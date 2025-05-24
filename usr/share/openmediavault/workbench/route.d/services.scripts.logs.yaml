@@ -1,0 +1,6 @@
+version: "1.0"
+type: route
+data:
+  url: "/services/scripts/logs"
+  title: _("Logs")
+  component: omv-services-scripts-logs-datatable-page

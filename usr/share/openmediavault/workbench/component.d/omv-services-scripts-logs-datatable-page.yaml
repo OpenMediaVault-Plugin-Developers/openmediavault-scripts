@@ -1,0 +1,83 @@
+version: '1.0'
+type: component
+data:
+  name: omv-services-scripts-logs-datatable-page
+  type: datatablePage
+  config:
+    autoReload: false
+    hasSearchField: true
+    stateId: f363208e-38b1-11f0-878c-e7356bfa2155
+    store:
+      proxy:
+        service: Scripts
+        get:
+          method: getLogList
+    columns:
+      - name: _('ID')
+        prop: id
+        flexGrow: 1
+        sortable: true
+        hidden: true
+      - name: _('Script')
+        prop: script
+        flexGrow: 1
+        sortable: true
+      - name: _('Start')
+        prop: start
+        flexGrow: 2
+        sortable: true
+      - name: _('Stop')
+        prop: stop
+        flexGrow: 2
+        sortable: true
+      - name: _('Exit Code')
+        prop: exitcode
+        flexGrow: 1
+        sortable: true
+      - name: _('Duration')
+        prop: duration
+        flexGrow: 1
+        sortable: true
+      - name: _('Run Log')
+        prop: runlog
+        flexGrow: 3
+        sortable: true
+      - name: _('Log Size')
+        prop: logsize
+        flexGrow: 1
+        sortable: true
+        cellTemplateName: template
+        cellTemplateConfig: '{{ logsize | tobytes | binaryunit | notavailable("-") }}'
+    actions:
+      - type: iconButton
+        tooltip: _('Delete')
+        icon: delete
+        enabledConstraints:
+          minSelected: 1
+          maxSelected: 1
+        execute:
+          type: request
+          request:
+            service: Scripts
+            method: deleteLog
+            params:
+              id: '{{ _selected[0].id }}'
+              runlog: '{{ _selected[0].runlog }}'
+      - type: iconButton
+        tooltip: _('View Log')
+        icon: mdi:file-document-outline
+        enabledConstraints:
+          minSelected: 1
+          maxSelected: 1
+        execute:
+          type: taskDialog
+          taskDialog:
+            config:
+              title: _('View log ...')
+              startOnInit: true
+              showCompletion: false
+              request:
+                service: Scripts
+                method: viewLog
+                params:
+                  runlog: '{{ _selected[0].runlog }}'

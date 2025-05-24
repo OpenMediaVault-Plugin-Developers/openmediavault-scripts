@@ -1,0 +1,8 @@
+version: "1.0"
+type: navigation-item
+data:
+  path: "services.scripts.logs"
+  text: _("Logs")
+  position: 40
+  icon: mdi:file-document-outline
+  url: "/services/scripts/logs"
