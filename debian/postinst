@@ -16,6 +16,9 @@ case "$1" in
         if [ -n "$2" ]; then
             omv-confdbadm migrate "conf.service.scripts" "${2}"
         fi
+
+        # rewrite jobs
+        omv-salt deploy run --no-color --quiet scripts || :
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
