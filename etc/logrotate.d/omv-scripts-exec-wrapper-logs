@@ -2,6 +2,7 @@
     missingok
     rotate 90
     monthly
+    maxsize 5M
     compress
     notifempty
 }
