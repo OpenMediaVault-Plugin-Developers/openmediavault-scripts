@@ -7,6 +7,9 @@ data:
     autoReload: false
     hasSearchField: true
     stateId: f363208e-38b1-11f0-878c-e7356bfa2155
+    sorters:
+      - dir: desc
+        prop: start
     store:
       proxy:
         service: Scripts
