@@ -15,6 +15,7 @@ export LC_ALL=C.UTF-8
 logCsv=/var/log/omv-scripts-exec-tracker.log
 logDir=/var/log/omv-scripts-exec-tracker
 mkdir -p "${logDir}"
+chmod 755 "${logDir}"
 
 script="$1"; shift
 scriptName=$(basename "${script}")
