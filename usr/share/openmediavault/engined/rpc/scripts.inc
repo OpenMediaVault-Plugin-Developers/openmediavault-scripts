@@ -703,7 +703,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 continue;
             }
             // prefix with zlib wrapper if compressed
-            $path = (substr($file, -3) === '.gz') ? "compress.zlib://{$file}" : $file;
+            $path = $this->isGz($file) ? "compress.zlib://{$file}" : $file;
             // read log as csv
             if ($fh = @fopen($path, 'r')) {
                 while (($row = fgetcsv($fh)) !== false) {
@@ -732,7 +732,35 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
     {
         // Validate the RPC caller context.
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
-        if ($params['logfile'] == '/var/log/omv-scripts-exec-tracker.log') {
+        $logfile = $params['logfile'];
+        $id = $params['id'];
+        $gz = $this->isGz($logfile);
+        if ($gz && is_readable($logfile)) {
+            $tmp = sprintf('%s.tmp', $logfile);
+            $in = gzopen($logfile, 'rb');
+            $out = fopen($tmp, 'w');
+            if ($in && $out) {
+                while (!gzeof($in)) {
+                    $line = gzgets($in);
+                    // only write lines that do NOT start with our ID:
+                    if (!preg_match("/^{$id},/", $line)) {
+                        fwrite($out, $line);
+                    }
+                }
+                gzclose($in);
+                fclose($out);
+                $in2 = fopen($tmp, 'rb');
+                $out2 = gzopen($logfile, 'wb9');
+                if ($in2 && $out2) {
+                    while (!feof($in2)) {
+                        gzwrite($out2, fread($in2, 8192));
+                    }
+                    fclose($in2);
+                    gzclose($out2);
+                }
+                unlink($tmp);
+            }
+        } elseif (is_writable($logfile)) {
             // delete id from log file
             $cmdArgs = [];
             $cmdArgs[] = 'sed';
@@ -742,9 +770,10 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             $cmd = new \OMV\System\Process($cmdArgs);
             $cmd->execute($search);
         }
-        // TODO - add ability to remove entry from compressed log later
         // delete log file
-        unlink($params['runlog']);
+        if (file_exists($params['runlog'])) {
+            @unlink($params['runlog']);
+        }
     }
 
     public function viewLog($params, $context)
@@ -755,10 +784,29 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             use ($params) {
                 $output = [];
                 $runlog = $params['runlog'];
-                // TODO - look for compressed version if file not found
-                if (file_exists($runlog)) {
+                // if file doesn't exist, look for logrotated version
+                if (!is_readable($runlog)) {
+                    $candidates = glob($runlog . '.*');
+                    if ($candidates) {
+                        // sort by modification time, newest first
+                        usort($candidates, function($a, $b) {
+                            return filemtime($b) - filemtime($a);
+                        });
+                        foreach ($candidates as $f) {
+                            if (is_readable($f)) {
+                                $runlog = $f;
+                                file_put_contents($bgOutputFilename,
+                                  "using logrotated log file " . $runlog .
+                                  PHP_EOL . PHP_EOL, FILE_APPEND);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (is_readable($runlog)) {
+                    $gz = $this->isGz($runlog);
                     $cmdArgs = [];
-                    $cmdArgs[] = 'cat';
+                    $cmdArgs[] = $gz ? 'zcat' : 'cat';
                     $cmdArgs[] = $runlog;
                     $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
@@ -772,5 +820,18 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 return $output;
             }
         );
+    }
+
+    private function isGz($path)
+    {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $type = $finfo->file($path);
+        if (in_array($type, ['application/x-gzip','application/gzip'], true)) {
+            return true;
+        } elseif (strpos($type, 'text/') === 0) {
+            return false;
+        } else {
+            throw new \OMV\Exception('bad file ' . $path);
+        }
     }
 }
