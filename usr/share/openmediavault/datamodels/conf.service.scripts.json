@@ -32,6 +32,16 @@
       "type": "string",
       "default": "700"
     },
+    "logretentiontype": {
+      "type": "string",
+      "default": "daily"
+    },
+    "logretentionlength": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 366,
+      "default": "14"
+    },
     "files": {
       "type": "object",
       "properties": {

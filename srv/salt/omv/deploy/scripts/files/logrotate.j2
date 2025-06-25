@@ -1,0 +1,33 @@
+{{ pillar['headers']['auto_generated'] }}
+{{ pillar['headers']['warning'] }}
+
+# keep 12 weeks of log files, rotating each week.
+# If the file size exceeds 5M the it will be rotated even if the date based rotate isn't due.
+/var/log/omv-scripts-exec-tracker.log {
+    missingok
+    rotate 12
+    weekly
+    maxsize 5M
+    compress
+    notifempty
+}
+
+# this looks for a dummy file that is created by salt.
+# the lastaction uses find and modification date (mtime) to remove the log files
+# that are older than the specified settings.
+# have to do it this way because logrotate is unable to handle files 
+# that are created with timestamped names.  see the following link:
+# https://stackoverflow.com/a/23108631
+# subtract 1 from the number of days to keep due to rounding in find.
+# see https://man7.org/linux/man-pages/man1/find.1.html
+{% set loglength = 31 %}
+{% if logretentiontype == "weekly" %}{% set loglength = 7 %}{% elif logretentiontype == "monthly" %}{% set loglength = 31 %}{% else %}{% set loglength = 1 %}{% endif %}
+/var/log/omv-scripts-exec-tracker/dummy {
+    daily
+    rotate 0
+    create
+    ifempty
+    lastaction
+        find /var/log/omv-scripts-exec-tracker/ -mtime +{{ (loglength * logretentionlength) - 1 }} -name "*.log" -print -delete
+    endscript
+}

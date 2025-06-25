@@ -52,3 +52,20 @@ configure_scripts_scheduled_jobs:
     - mode: 644
 
 {% endif %}
+
+configure_scripts_log_rotation:
+  file.managed:
+    - name: '/etc/logrotate.d/omv-scripts-exec-wrapper-logs'
+    - source:
+      - salt://{{ tpldir }}/files/logrotate.j2
+    - template: jinja
+    - context:
+        logretentionlength: {{ config.logretentionlength }}
+        logretentiontype: {{ config.logretentiontype }}
+    - user: root
+    - group: root
+    - mode: 644
+
+configure_scripts_log_rotation_file:
+  file.touch:
+    - name: "/var/log/omv-scripts-exec-tracker/dummy"

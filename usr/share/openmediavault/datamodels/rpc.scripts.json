@@ -30,6 +30,16 @@
         "fileperms": {
           "type": "string",
           "required": true
+        },
+        "logretentiontype": {
+          "type": "string",
+          "required": true
+        },
+        "logretentionlength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 366,
+          "required": true
         }
       }
     }
