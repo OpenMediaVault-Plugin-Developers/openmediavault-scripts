@@ -693,25 +693,35 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
         // Validate the parameters of the RPC service method.
         $this->validateMethodParams($params, 'rpc.common.getlist');
-        // read log as csv
+        // grab the main log plus any rotated logs
+        $pattern = '/var/log/omv-scripts-exec-tracker.log*';
+        $logFiles = glob($pattern);
+        natsort($logFiles);
         $objectsAssoc = [];
-        $logFile = '/var/log/omv-scripts-exec-tracker.log';
-        if (file_exists($logFile) && is_readable($logFile)) {
-            $fh = fopen($logFile, 'r');
-            while (($row = fgetcsv($fh)) !== false) {
-                list($id, $start, $stop, $script, $exitcode, $duration, $runlog, $logsize) = $row;
-                $objectsAssoc[] = [
-                    'id' => $id,
-                    'script' => $script,
-                    'start' => $start,
-                    'stop' => $stop,
-                    'exitcode' => (int)$exitcode,
-                    'duration' => $duration,
-                    'runlog' => $runlog,
-                    'logsize' => (int)$logsize,
-                ];
+        foreach ($logFiles as $file) {
+            if (!is_file($file) || !is_readable($file)) {
+                continue;
             }
-            fclose($fh);
+            // prefix with zlib wrapper if compressed
+            $path = (substr($file, -3) === '.gz') ? "compress.zlib://{$file}" : $file;
+            // read log as csv
+            if ($fh = @fopen($path, 'r')) {
+                while (($row = fgetcsv($fh)) !== false) {
+                    list($id, $start, $stop, $script, $exitcode, $duration, $runlog, $logsize) = $row;
+                    $objectsAssoc[] = [
+                        'id' => $id,
+                        'script' => $script,
+                        'start' => $start,
+                        'stop' => $stop,
+                        'exitcode' => (int)$exitcode,
+                        'duration' => $duration,
+                        'runlog' => $runlog,
+                        'logsize' => (int)$logsize,
+                        'logfile' => $file
+                    ];
+                }
+                fclose($fh);
+            }
         }
         // Filter the result.
         return $this->applyFilter($objectsAssoc, $params['start'], $params['limit'],
@@ -722,14 +732,17 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
     {
         // Validate the RPC caller context.
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
-        // delete id from log file
-        $cmdArgs = [];
-        $cmdArgs[] = 'sed';
-        $cmdArgs[] = '-i';
-        $cmdArgs[] = sprintf("'/^%s/d'", $params['id']);
-        $cmdArgs[] = '/var/log/omv-scripts-exec-tracker.log';
-        $cmd = new \OMV\System\Process($cmdArgs);
-        $cmd->execute($search);
+        if ($params['logfile'] == '/var/log/omv-scripts-exec-tracker.log') {
+            // delete id from log file
+            $cmdArgs = [];
+            $cmdArgs[] = 'sed';
+            $cmdArgs[] = '-i';
+            $cmdArgs[] = sprintf("'/^%s/d'", $params['id']);
+            $cmdArgs[] = '/var/log/omv-scripts-exec-tracker.log';
+            $cmd = new \OMV\System\Process($cmdArgs);
+            $cmd->execute($search);
+        }
+        // TODO - add ability to remove entry from compressed log later
         // delete log file
         unlink($params['runlog']);
     }
@@ -742,6 +755,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             use ($params) {
                 $output = [];
                 $runlog = $params['runlog'];
+                // TODO - look for compressed version if file not found
                 if (file_exists($runlog)) {
                     $cmdArgs = [];
                     $cmdArgs[] = 'cat';

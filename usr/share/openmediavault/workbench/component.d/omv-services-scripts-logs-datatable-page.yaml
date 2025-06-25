@@ -51,6 +51,11 @@ data:
         sortable: true
         cellTemplateName: template
         cellTemplateConfig: '{{ logsize | tobytes | binaryunit | notavailable("-") }}'
+      - name: _('Log File')
+        prop: logfile
+        flexGrow: 1
+        sortable: true
+        hidden: true
     actions:
       - type: iconButton
         tooltip: _('Delete')
@@ -66,6 +71,7 @@ data:
             params:
               id: '{{ _selected[0].id }}'
               runlog: '{{ _selected[0].runlog }}'
+              logfile: '{{ _selected[0].logfile }}'
       - type: iconButton
         tooltip: _('View Log')
         icon: mdi:file-document-outline
@@ -84,3 +90,4 @@ data:
                 method: viewLog
                 params:
                   runlog: '{{ _selected[0].runlog }}'
+                  logfile: '{{ _selected[0].logfile }}'
