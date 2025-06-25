@@ -2,7 +2,7 @@ openmediavault-scripts (7.3) stable; urgency=low
 
   * Add configuration for log cleanup
 
- -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Sun, 25 June 2025 09:23:25 -0500
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Sun, 25 Jun 2025 09:23:25 -0500
 
 openmediavault-scripts (7.2) stable; urgency=low
 
