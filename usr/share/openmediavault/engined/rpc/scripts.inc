@@ -693,7 +693,12 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
         // Validate the parameters of the RPC service method.
         $this->validateMethodParams($params, 'rpc.common.getlist');
-        // read log as csv
+        // Get number of logrotate files possible
+        $db = \OMV\Config\Database::getInstance();
+        $scriptsobject = $db->get('conf.service.scripts');
+        $servicelogretentionlength = $scriptsobject->get('servicelogretentionlength');
+
+        // read base log as csv
         $objectsAssoc = [];
         $logFile = '/var/log/omv-scripts-exec-tracker.log';
         if (file_exists($logFile) && is_readable($logFile)) {
@@ -709,29 +714,66 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                     'duration' => $duration,
                     'runlog' => $runlog,
                     'logsize' => (int)$logsize,
+                    'logliststatus' => "live",
                 ];
             }
             fclose($fh);
+        }
+
+        // read logrotated logs as csv
+        for ($i = 1; $i <= $servicelogretentionlength; $i++)
+        {
+            $logFile = sprintf('/var/log/omv-scripts-exec-tracker.log.%d.gz', $i);
+            if (file_exists($logFile) && is_readable($logFile)) {
+                $fh = gzopen($logFile, 'r');
+                while (($row = fgetcsv($fh)) !== false) {
+                    list($id, $start, $stop, $script, $exitcode, $duration, $runlog, $logsize) = $row;
+                    $objectsAssoc[] = [
+                        'id' => $id,
+                        'script' => $script,
+                        'start' => $start,
+                        'stop' => $stop,
+                        'exitcode' => (int)$exitcode,
+                        'duration' => $duration,
+                        'runlog' => $runlog,
+                        'logsize' => (int)$logsize,
+                        'logliststatus' => "archived",
+                    ];
+                }
+                gzclose($fh);
+            }
         }
         // Filter the result.
         return $this->applyFilter($objectsAssoc, $params['start'], $params['limit'],
             $params['sortfield'], $params['sortdir'], $params['search']);
     }
 
+
     public function deleteLog($params, $context)
     {
         // Validate the RPC caller context.
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
         // delete id from log file
-        $cmdArgs = [];
-        $cmdArgs[] = 'sed';
-        $cmdArgs[] = '-i';
-        $cmdArgs[] = sprintf("'/^%s/d'", $params['id']);
-        $cmdArgs[] = '/var/log/omv-scripts-exec-tracker.log';
-        $cmd = new \OMV\System\Process($cmdArgs);
-        $cmd->execute($search);
+        // This can only be done on the non gzipped files.
+        if ($params['logliststatus'] == "live") {
+            $cmdArgs = [];
+            $cmdArgs[] = 'sed';
+            $cmdArgs[] = '-i';
+            $cmdArgs[] = sprintf("'/^%s/d'", $params['id']);
+            $cmdArgs[] = '/var/log/omv-scripts-exec-tracker.log';
+            $cmd = new \OMV\System\Process($cmdArgs);
+            $cmd->execute($search);
+        }
         // delete log file
-        unlink($params['runlog']);
+        $runlog = $params['runlog'];
+        if (file_exists($runlog)) {
+            unlink($runlog);
+        } else {
+            $runlog = $runlog . '.gz';
+            if (file_exists($runlog)) {
+                unlink($runlog);
+            }
+        }
     }
 
     public function viewLog($params, $context)
@@ -742,18 +784,37 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             use ($params) {
                 $output = [];
                 $runlog = $params['runlog'];
+                $runloggz = $runlog . '.gz';
+                $found = false;
+                $catcmd = '';
                 if (file_exists($runlog)) {
+                    $catcmd = 'cat';
+                } elseif (file_exists($runloggz)) {
+                    $catcmd = 'zcat';
+                } else {
+                    // as there is a good likelyhood of the log file having been removed by logrotate, give a friendly message.
+                    // The following is a workaround to $output[] = "Scripts Log Viewer - Unable to locate file " . $runlog; not resulting in text in the box.
                     $cmdArgs = [];
-                    $cmdArgs[] = 'cat';
-                    $cmdArgs[] = $runlog;
+                    $cmdArgs[] = "echo";
+                    // ToDo: make this message translated.
+                    $cmdArgs[] = "Scripts Log Viewer - Unable to locate file " . $runlog;
                     $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
                     $cmdLine = $cmd->getCommandLine();
                     if (0 !== $this->exec($cmdLine, $output, $bgOutputFilename)) {
                         throw new \OMV\ExecException($cmdLine, $output);
                     }
-                } else {
-                    throw new \OMV\ExecException('run log not found - ' . $runlog);
+                    return $output;
+                }
+
+                $cmdArgs = [];
+                $cmdArgs[] = $catcmd;
+                $cmdArgs[] = $runlog;
+                $cmd = new \OMV\System\Process($cmdArgs);
+                $cmd->setRedirect2to1();
+                $cmdLine = $cmd->getCommandLine();
+                if (0 !== $this->exec($cmdLine, $output, $bgOutputFilename)) {
+                    throw new \OMV\ExecException($cmdLine, $output);
                 }
                 return $output;
             }

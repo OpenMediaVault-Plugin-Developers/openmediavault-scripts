@@ -1,12 +1,12 @@
 {{ pillar['headers']['auto_generated'] }}
 {{ pillar['headers']['warning'] }}
 
-# keep 12 weeks of log files, rotating each week.
+# keep {{servicelogretentionlength}} {{ servicelogretentiontype }} of log files, rotating each {{ servicelogretentiontype }}.
 # If the file size exceeds 5M the it will be rotated even if the date based rotate isn't due.
 /var/log/omv-scripts-exec-tracker.log {
     missingok
-    rotate 12
-    weekly
+    rotate {{servicelogretentionlength}}
+    {{ servicelogretentiontype }}
     maxsize 5M
     compress
     notifempty
@@ -28,6 +28,12 @@
     create
     ifempty
     lastaction
+        {% if compresslogretention | to_bool %}
+        find /var/log/omv-scripts-exec-tracker/ -mtime +{{ (loglength * logretentionlength) - 1 }} -name "*.log.gz" -print -delete
+        find /var/log/omv-scripts-exec-tracker/ -mtime +0 -name "*.log" -size 0 -delete
+        find /var/log/omv-scripts-exec-tracker/ -mtime +1 -name "*.log" -exec gzip -q {} \;
+        {% else %}
         find /var/log/omv-scripts-exec-tracker/ -mtime +{{ (loglength * logretentionlength) - 1 }} -name "*.log" -print -delete
+        {% endif %}
     endscript
 }

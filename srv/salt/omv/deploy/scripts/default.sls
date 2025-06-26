@@ -60,6 +60,9 @@ configure_scripts_log_rotation:
       - salt://{{ tpldir }}/files/logrotate.j2
     - template: jinja
     - context:
+        servicelogretentiontype: {{ config.servicelogretentiontype }}
+        servicelogretentionlength: {{ config.servicelogretentionlength }}
+        compresslogretention: {{ config.compresslogretention }}
         logretentionlength: {{ config.logretentionlength }}
         logretentiontype: {{ config.logretentiontype }}
     - user: root

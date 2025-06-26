@@ -22,19 +22,8 @@ set -e
 . /etc/default/openmediavault
 . /usr/share/openmediavault/scripts/helper-functions
 
-if ! omv_config_exists "/config/services/scripts"; then
-  omv_config_add_node "/config/services" "scripts"
-  omv_config_add_key "/config/services/scripts" "sharedfolderref" ""
-  omv_config_add_key "/config/services/scripts" "scriptsowner" "root"
-  omv_config_add_key "/config/services/scripts" "scriptsgroup" "root"
-  omv_config_add_key "/config/services/scripts" "fileperms" "700"
-  omv_config_add_key "/config/services/scripts" "logretentiontype" "daily"
-  omv_config_add_key "/config/services/scripts" "logretentionlength" "14"
   omv_config_add_key "/config/services/scripts" "servicelogretentiontype" "weekly"
-  omv_config_add_key "/config/services/scripts" "servicelogrnanoetentionlength" "12"
+  omv_config_add_key "/config/services/scripts" "servicelogretentionlength" "12"
   omv_config_add_key "/config/services/scripts" "compresslogretention" "false"
-  omv_config_add_node "/config/services/scripts" "files"
-  omv_config_add_node "/config/services/scripts" "jobs"
-fi
 
 exit 0

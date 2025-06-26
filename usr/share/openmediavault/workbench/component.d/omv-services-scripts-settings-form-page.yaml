@@ -70,28 +70,59 @@ data:
               - _('Administrator - read/write, Users - read/write, Others - read-only')
             - - '777'
               - _('Everyone - read/write')
-      - type: select
-        name: logretentiontype
-        label: _('Unit of script log retention')
-        value: 'daily'
-        store:
-          data:
-            - - 'daily'
-              - _('Rotate daily')
-            - - 'weekly'
-              - _('Rotate weekly')
-            - - 'monthly'
-              - _('Rotate monthly')
-      - type: numberInput
-        name: logretentionlength
-        label: _("Number of units before delete")
-        value: 14
-        hint: _("if you choose days, then the log files will be retained for this number of days")
-        validators:
-          min: 1
-          max: 366
-          patternType: integer
-          required: true
+      - type: container
+        fields:
+        - type: select
+          name: servicelogretentiontype
+          label: _('Period of service log retention')
+          value: 'daily'
+          store:
+            data:
+              - - 'daily'
+                - _('Rotate daily')
+              - - 'weekly'
+                - _('Rotate weekly')
+              - - 'monthly'
+                - _('Rotate monthly')
+        - type: numberInput
+          name: servicelogretentionlength
+          label: _("Number of separate compressed logs to keep")
+          value: 14
+          hint: _("this is the number of files that will be kept, with a new file being created each period")
+          validators:
+            min: 1
+            max: 366
+            patternType: integer
+            required: true
+      - type: container
+        fields:
+        - type: select
+          name: logretentiontype
+          label: _('Unit of script log retention')
+          value: 'daily'
+          store:
+            data:
+              - - 'daily'
+                - _('Rotate daily')
+              - - 'weekly'
+                - _('Rotate weekly')
+              - - 'monthly'
+                - _('Rotate monthly')
+        - type: numberInput
+          name: logretentionlength
+          label: _("Number of units before delete")
+          value: 14
+          hint: _("if you choose days, then the log files will be retained for this number of days")
+          validators:
+            min: 1
+            max: 366
+            patternType: integer
+            required: true
+        - type: checkbox
+          name: compresslogretention
+          label: _("Compress populated and remove empty log files?")
+          value: false
+          hint: _("if you choose yes then files older than 1 day will be compressed")
     buttons:
       - template: submit
       - template: cancel
