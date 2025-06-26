@@ -29,6 +29,6 @@
     ifempty
     lastaction
         find /var/log/omv-scripts-exec-tracker/ -type f -mtime +{{ mtime }} -name "*.gz" -print -delete
-        find /var/log/omv-scripts-exec-tracker/ -type f -not -name '*.gz' -name '*.log*' -print0 | xargs -0 gzip
+        find /var/log/omv-scripts-exec-tracker/ -type f -not -name '*.gz' -name '*.log*' -print0 | xargs -0 -r gzip
     endscript
 }
