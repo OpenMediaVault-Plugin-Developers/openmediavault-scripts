@@ -816,16 +816,9 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                         throw new \OMV\ExecException($cmdLine, $output);
                     }
                 } else {
-                    // clean message rather than a http 500 error in the front end.
-                    $cmdArgs = [];
-                    $cmdArgs[] = 'echo';
-                    $cmdArgs[] = "Scripts Log Viewer - Unable to locate file ". $runlog . PHP_EOL . PHP_EOL;
-                    $cmd = new \OMV\System\Process($cmdArgs);
-                    $cmd->setRedirect2to1();
-                    $cmdLine = $cmd->getCommandLine();
-                    if (0 !== $this->exec($cmdLine, $output, $bgOutputFilename)) {
-                        throw new \OMV\ExecException($cmdLine, $output);
-                    }
+                    file_put_contents($bgOutputFilename,
+                      "Scripts Log Viewer - Unable to locate file ". $runlog .
+                      PHP_EOL . PHP_EOL, FILE_APPEND);
                 }
                 return $output;
             }
