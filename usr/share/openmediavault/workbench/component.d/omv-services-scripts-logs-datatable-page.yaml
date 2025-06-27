@@ -78,6 +78,12 @@ data:
         enabledConstraints:
           minSelected: 1
           maxSelected: 1
+          constraint:
+            - operator: gt
+              arg0:
+                prop: logsize
+              arg1:
+                value: 0
         execute:
           type: taskDialog
           taskDialog:
