@@ -42,6 +42,20 @@
       "maximum": 366,
       "default": "14"
     },
+    "servicelogretentiontype": {
+      "type": "string",
+      "default": "weekly"
+    },
+    "servicelogretentionlength": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 366,
+      "default": "12"
+    },
+    "removezerobyte": {
+      "type": "boolean",
+      "default": false
+    },
     "files": {
       "type": "object",
       "properties": {
