@@ -28,14 +28,10 @@
     create
     ifempty
     lastaction
-        {% if compresslogretention | to_bool %}
-        find /var/log/omv-scripts-exec-tracker/ -type f -mtime +{{ mtime }} -name "*.gz" -print -delete
+        {% if removezerobyte | to_bool %}
         find /var/log/omv-scripts-exec-tracker/ -type f -mtime +0 -name "*.log" -size 0 -delete
-        find /var/log/omv-scripts-exec-tracker/ -type f -mtime +1 -name "*.log" -exec gzip -q {} \;
-        find /var/log/omv-scripts-exec-tracker/ -type f -not -name '*.gz' -name '*.log*' -print0 | xargs -0 -r gzip
-        {% else %}
+        {% endif %}
         find /var/log/omv-scripts-exec-tracker/ -type f -mtime +{{ mtime }} -name "*.gz" -print -delete
         find /var/log/omv-scripts-exec-tracker/ -type f -not -name '*.gz' -name '*.log*' -print0 | xargs -0 -r gzip
-        {% endif %}
     endscript
 }

@@ -32,7 +32,7 @@ if ! omv_config_exists "/config/services/scripts"; then
   omv_config_add_key "/config/services/scripts" "logretentionlength" "14"
   omv_config_add_key "/config/services/scripts" "servicelogretentiontype" "weekly"
   omv_config_add_key "/config/services/scripts" "servicelogrnanoetentionlength" "12"
-  omv_config_add_key "/config/services/scripts" "compresslogretention" "false"
+  omv_config_add_key "/config/services/scripts" "removezerobyte" "false"
   omv_config_add_node "/config/services/scripts" "files"
   omv_config_add_node "/config/services/scripts" "jobs"
 fi

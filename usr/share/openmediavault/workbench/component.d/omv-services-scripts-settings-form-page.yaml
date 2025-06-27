@@ -119,10 +119,10 @@ data:
             patternType: integer
             required: true
         - type: checkbox
-          name: compresslogretention
-          label: _("Compress populated and remove empty log files?")
+          name: removezerobyte
+          label: _("Remove empty log files?")
           value: false
-          hint: _("if you choose yes then files older than 1 day will be compressed")
+          hint: _("if you choose yes then empty log files will be removed")
     buttons:
       - template: submit
       - template: cancel

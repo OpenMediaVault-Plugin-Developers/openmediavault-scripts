@@ -62,7 +62,7 @@ configure_scripts_log_rotation:
     - context:
         servicelogretentiontype: {{ config.servicelogretentiontype }}
         servicelogretentionlength: {{ config.servicelogretentionlength }}
-        compresslogretention: {{ config.compresslogretention }}
+        removezerobyte: {{ config.removezerobyte }}
         logretentionlength: {{ config.logretentionlength }}
         logretentiontype: {{ config.logretentiontype }}
     - user: root

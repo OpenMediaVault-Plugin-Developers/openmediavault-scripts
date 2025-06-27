@@ -28,5 +28,14 @@ fi
 if ! omv_config_exists "/config/services/scripts/logretentionlength"; then
   omv_config_add_key "/config/services/scripts" "logretentionlength" "14"
 fi
+if ! omv_config_exists "/config/services/scripts/servicelogretentiontype"; then
+  omv_config_add_key "/config/services/scripts" "servicelogretentiontype" "weekly"
+fi
+if ! omv_config_exists "/config/services/scripts/servicelogretentionlength"; then
+  omv_config_add_key "/config/services/scripts" "servicelogretentionlength" "12"
+fi
+if ! omv_config_exists "/config/services/scripts/removezerobyte"; then
+  omv_config_add_key "/config/services/scripts" "removezerobyte" "false"
+fi
 
 exit 0

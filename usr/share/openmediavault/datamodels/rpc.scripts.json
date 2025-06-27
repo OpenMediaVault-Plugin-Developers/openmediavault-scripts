@@ -51,7 +51,7 @@
           "maximum": 366,
           "required": true
         },
-        "compresslogretention": {
+        "removezerobyte": {
           "type": "boolean",
           "required": true
         }
