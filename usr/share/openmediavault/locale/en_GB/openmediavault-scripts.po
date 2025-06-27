@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-02 09:41-0500\n"
+"POT-Creation-Date: 2025-06-27 07:53-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: Andi Chandler <andi@gowling.com>, 2024\n"
 "Language-Team: English (United Kingdom) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/en_GB/)\n"
@@ -30,8 +30,10 @@ msgstr "Add Python"
 msgid "Add from URL"
 msgstr "Add from URL"
 
-msgid "Add from url"
-msgstr "Add from URL"
+msgid ""
+"Are you sure you want to create a new git repo?  This will erase all "
+"history!"
+msgstr ""
 
 msgid "Are you sure you want to sync changes from the file?"
 msgstr "Are you sure you want to sync changes from the file?"
@@ -47,9 +49,6 @@ msgstr "Created scheduled job."
 
 msgid "Created script."
 msgstr "Created script."
-
-msgid "Created shell script."
-msgstr "Created shell script."
 
 msgid "Docs"
 msgstr "Docs"
@@ -72,6 +71,9 @@ msgstr "Edit shell script."
 msgid "File size"
 msgstr "File size"
 
+msgid "Git"
+msgstr ""
+
 msgid "Import"
 msgstr "Import"
 
@@ -84,14 +86,29 @@ msgstr "Import one"
 msgid "Import one existing script ..."
 msgstr "Import one existing script ..."
 
+msgid "Initialize new git repo ..."
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
 msgid "Name"
 msgstr "Name"
+
+msgid "Number of separate compressed logs to keep"
+msgstr ""
+
+msgid "Number of units before delete"
+msgstr ""
 
 msgid "Optional. Will use downloaded name if one is not specified."
 msgstr "Optional. Will use downloaded name if one is not specified."
 
 msgid "Path"
 msgstr "Path"
+
+msgid "Remove empty log files?"
+msgstr ""
 
 msgid "Schedule"
 msgstr "Schedule"
@@ -105,6 +122,9 @@ msgstr "Scripts"
 msgid "Settings"
 msgstr "Settings"
 
+msgid "Show all file changes ..."
+msgstr ""
+
 msgid "Sync changes from file"
 msgstr "Sync changes from file"
 
@@ -112,7 +132,7 @@ msgid "Syncing changes from file ..."
 msgstr "Syncing changes from file ..."
 
 msgid "The field should only contain * or a comma separated list of values."
-msgstr ""
+msgstr "The field should only contain * or a comma separated list of values."
 
 msgid ""
 "This will import one or more scripts in the selected folder.<br/>It will not"
@@ -130,3 +150,22 @@ msgstr ""
 
 msgid "URL"
 msgstr "URL"
+
+msgid ""
+"if you choose days, then the log files will be retained for this number of "
+"days"
+msgstr ""
+
+msgid "if you choose yes then empty log files will be removed"
+msgstr ""
+
+msgid "init git repo"
+msgstr ""
+
+msgid "show file changes"
+msgstr ""
+
+msgid ""
+"this is the number of files that will be kept, with a new file being created"
+" each period"
+msgstr ""

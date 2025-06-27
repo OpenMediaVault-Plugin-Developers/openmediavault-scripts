@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-02 09:41-0500\n"
+"POT-Creation-Date: 2025-06-27 07:53-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Language-Team: Dutch (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,9 @@ msgstr ""
 msgid "Add from URL"
 msgstr ""
 
-msgid "Add from url"
+msgid ""
+"Are you sure you want to create a new git repo?  This will erase all "
+"history!"
 msgstr ""
 
 msgid "Are you sure you want to sync changes from the file?"
@@ -42,9 +44,6 @@ msgid "Created scheduled job."
 msgstr ""
 
 msgid "Created script."
-msgstr ""
-
-msgid "Created shell script."
 msgstr ""
 
 msgid "Docs"
@@ -68,6 +67,9 @@ msgstr ""
 msgid "File size"
 msgstr ""
 
+msgid "Git"
+msgstr ""
+
 msgid "Import"
 msgstr ""
 
@@ -80,13 +82,28 @@ msgstr ""
 msgid "Import one existing script ..."
 msgstr ""
 
+msgid "Initialize new git repo ..."
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
 msgid "Name"
+msgstr ""
+
+msgid "Number of separate compressed logs to keep"
+msgstr ""
+
+msgid "Number of units before delete"
 msgstr ""
 
 msgid "Optional. Will use downloaded name if one is not specified."
 msgstr ""
 
 msgid "Path"
+msgstr ""
+
+msgid "Remove empty log files?"
 msgstr ""
 
 msgid "Schedule"
@@ -99,6 +116,9 @@ msgid "Scripts"
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Show all file changes ..."
 msgstr ""
 
 msgid "Sync changes from file"
@@ -121,4 +141,23 @@ msgid ""
 msgstr ""
 
 msgid "URL"
+msgstr ""
+
+msgid ""
+"if you choose days, then the log files will be retained for this number of "
+"days"
+msgstr ""
+
+msgid "if you choose yes then empty log files will be removed"
+msgstr ""
+
+msgid "init git repo"
+msgstr ""
+
+msgid "show file changes"
+msgstr ""
+
+msgid ""
+"this is the number of files that will be kept, with a new file being created"
+" each period"
 msgstr ""

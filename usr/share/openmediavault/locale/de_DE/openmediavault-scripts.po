@@ -3,122 +3,177 @@
 # This file is distributed under the same license as the openmediavault-scripts package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
+# Translators:
+# Thomas Melka, 2024
+# Johannes Hell, 2024
+# Ettore Atalan <atalanttore@googlemail.com>, 2024
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-02 09:41-0500\n"
+"POT-Creation-Date: 2025-06-27 07:53-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
-"Language-Team: German (Germany) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/de_DE/)\n"
+"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>, 2024\n"
+"Language-Team: German (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de_DE\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 msgid "Add Python"
-msgstr ""
+msgstr "Python hinzufügen"
 
 msgid "Add from URL"
-msgstr ""
+msgstr "Von URL hinzufügen"
 
-msgid "Add from url"
+msgid ""
+"Are you sure you want to create a new git repo?  This will erase all "
+"history!"
 msgstr ""
 
 msgid "Are you sure you want to sync changes from the file?"
 msgstr ""
+"Sicher, dass Änderungen aus der Datei in das Plugin synchronisiert werden "
+"sollen?"
 
 msgid "Changes have been synced from file."
-msgstr ""
+msgstr "Änderungen wurden aus der Datei synchronisiert."
 
 msgid "Create"
-msgstr ""
+msgstr "Erstellen"
 
 msgid "Created scheduled job."
-msgstr ""
+msgstr "Geplanten Job erstellt."
 
 msgid "Created script."
-msgstr ""
-
-msgid "Created shell script."
-msgstr ""
+msgstr "Skript erstellt."
 
 msgid "Docs"
-msgstr ""
+msgstr "Doku"
 
 msgid "Downloading script ..."
-msgstr ""
+msgstr "Skript wird heruntergeladen ..."
 
 msgid "Edit"
-msgstr ""
+msgstr "Bearbeiten"
 
 msgid "Edit Python"
-msgstr ""
+msgstr "Python bearbeiten"
 
 msgid "Edit scheduled job."
-msgstr ""
+msgstr "Geplanten Auftrag bearbeiten."
 
 msgid "Edit shell script."
-msgstr ""
+msgstr "Shell-Skript bearbeiten."
 
 msgid "File size"
+msgstr "Dateigröße"
+
+msgid "Git"
 msgstr ""
 
 msgid "Import"
-msgstr ""
+msgstr "Importieren"
 
 msgid "Import existing scripts ..."
-msgstr ""
+msgstr "Vorhandene Skripte werden importiert ..."
 
 msgid "Import one"
-msgstr ""
+msgstr "Einzelimport"
 
 msgid "Import one existing script ..."
+msgstr "Ein vorhandenes Skript importieren ..."
+
+msgid "Initialize new git repo ..."
+msgstr ""
+
+msgid "Logs"
 msgstr ""
 
 msgid "Name"
+msgstr "Name"
+
+msgid "Number of separate compressed logs to keep"
+msgstr ""
+
+msgid "Number of units before delete"
 msgstr ""
 
 msgid "Optional. Will use downloaded name if one is not specified."
 msgstr ""
+"Optional. Verwendet den heruntergeladenen Namen, wenn keiner angegeben ist."
 
 msgid "Path"
+msgstr "Pfad"
+
+msgid "Remove empty log files?"
 msgstr ""
 
 msgid "Schedule"
-msgstr ""
+msgstr "Zeitplan"
 
 msgid "Script has been added."
-msgstr ""
+msgstr "Skript wurde hinzugefügt."
 
 msgid "Scripts"
-msgstr ""
+msgstr "Skripte"
 
 msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "Show all file changes ..."
 msgstr ""
 
 msgid "Sync changes from file"
-msgstr ""
+msgstr "Änderungen aus Datei synchronisieren"
 
 msgid "Syncing changes from file ..."
-msgstr ""
+msgstr "Synchronisieren von Änderungen aus der Datei..."
 
 msgid "The field should only contain * or a comma separated list of values."
 msgstr ""
+"Das Feld sollte nur * oder eine durch Komma getrennte Liste von Werten "
+"enthalten."
 
 msgid ""
 "This will import one or more scripts in the selected folder.<br/>It will not"
 " import any scripts that already exist in the plugin."
 msgstr ""
+"Importiert ein oder mehrere in dem gewählten Ordner befindliche "
+"Skripte.<br/>Skripte, die bereits im Plugin vorhanden sind, werden nicht "
+"importiert."
 
 msgid ""
 "This will import one script from the specified path.<br/>It will not import "
 "a script that already exist in the plugin."
 msgstr ""
+"Importiert ein Skript vom angegebenen Pfad.<br/>Ein Skript, das bereits im "
+"Plugin vorhanden ist, wird nicht importiert."
 
 msgid "URL"
+msgstr "URL"
+
+msgid ""
+"if you choose days, then the log files will be retained for this number of "
+"days"
+msgstr ""
+
+msgid "if you choose yes then empty log files will be removed"
+msgstr ""
+
+msgid "init git repo"
+msgstr ""
+
+msgid "show file changes"
+msgstr ""
+
+msgid ""
+"this is the number of files that will be kept, with a new file being created"
+" each period"
 msgstr ""

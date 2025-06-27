@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-02 09:41-0500\n"
+"POT-Creation-Date: 2025-06-27 07:53-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: songming <by@songming.me>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/zh_CN/)\n"
@@ -30,8 +30,10 @@ msgstr "添加 Python"
 msgid "Add from URL"
 msgstr "从 URL 地址添加"
 
-msgid "Add from url"
-msgstr "从 url 地址添加"
+msgid ""
+"Are you sure you want to create a new git repo?  This will erase all "
+"history!"
+msgstr ""
 
 msgid "Are you sure you want to sync changes from the file?"
 msgstr "您确定要同步文件的变更？"
@@ -47,9 +49,6 @@ msgstr "创建计划任务。"
 
 msgid "Created script."
 msgstr "创建脚本。"
-
-msgid "Created shell script."
-msgstr "创建 shell 脚本。"
 
 msgid "Docs"
 msgstr "文档"
@@ -72,6 +71,9 @@ msgstr "编辑 shell 脚本。"
 msgid "File size"
 msgstr "文件大小"
 
+msgid "Git"
+msgstr ""
+
 msgid "Import"
 msgstr "导入"
 
@@ -84,14 +86,29 @@ msgstr "导入一个"
 msgid "Import one existing script ..."
 msgstr "导入一个已有脚本 ..."
 
+msgid "Initialize new git repo ..."
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
 msgid "Name"
 msgstr "名称"
+
+msgid "Number of separate compressed logs to keep"
+msgstr ""
+
+msgid "Number of units before delete"
+msgstr ""
 
 msgid "Optional. Will use downloaded name if one is not specified."
 msgstr "选项。如果没有指定将使用已下载的名字。"
 
 msgid "Path"
 msgstr "路径"
+
+msgid "Remove empty log files?"
+msgstr ""
 
 msgid "Schedule"
 msgstr "计划"
@@ -105,6 +122,9 @@ msgstr "脚本"
 msgid "Settings"
 msgstr "设置"
 
+msgid "Show all file changes ..."
+msgstr ""
+
 msgid "Sync changes from file"
 msgstr "同步文件中的变更"
 
@@ -112,7 +132,7 @@ msgid "Syncing changes from file ..."
 msgstr "同步文件变更中 ..."
 
 msgid "The field should only contain * or a comma separated list of values."
-msgstr ""
+msgstr "该字段只能使用 * 或逗号分隔不同的值。"
 
 msgid ""
 "This will import one or more scripts in the selected folder.<br/>It will not"
@@ -126,3 +146,22 @@ msgstr "这将从指定路径导入一个脚本。<br/>这将不会导入一个�
 
 msgid "URL"
 msgstr "URL"
+
+msgid ""
+"if you choose days, then the log files will be retained for this number of "
+"days"
+msgstr ""
+
+msgid "if you choose yes then empty log files will be removed"
+msgstr ""
+
+msgid "init git repo"
+msgstr ""
+
+msgid "show file changes"
+msgstr ""
+
+msgid ""
+"this is the number of files that will be kept, with a new file being created"
+" each period"
+msgstr ""
