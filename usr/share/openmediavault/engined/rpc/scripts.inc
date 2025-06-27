@@ -724,34 +724,10 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             }
         }
 
-        // read logrotated logs as csv
-        for ($i = 1; $i <= $servicelogretentionlength; $i++)
-        {
-            $logFile = sprintf('/var/log/omv-scripts-exec-tracker.log.%d.gz', $i);
-            if (file_exists($logFile) && is_readable($logFile)) {
-                $fh = gzopen($logFile, 'r');
-                while (($row = fgetcsv($fh)) !== false) {
-                    list($id, $start, $stop, $script, $exitcode, $duration, $runlog, $logsize) = $row;
-                    $objectsAssoc[] = [
-                        'id' => $id,
-                        'script' => $script,
-                        'start' => $start,
-                        'stop' => $stop,
-                        'exitcode' => (int)$exitcode,
-                        'duration' => $duration,
-                        'runlog' => $runlog,
-                        'logsize' => (int)$logsize,
-                        'logliststatus' => "archived",
-                    ];
-                }
-                gzclose($fh);
-            }
-        }
         // Filter the result.
         return $this->applyFilter($objectsAssoc, $params['start'], $params['limit'],
             $params['sortfield'], $params['sortdir'], $params['search']);
     }
-
 
     public function deleteLog($params, $context)
     {
