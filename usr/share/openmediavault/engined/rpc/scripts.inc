@@ -693,31 +693,35 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
         // Validate the parameters of the RPC service method.
         $this->validateMethodParams($params, 'rpc.common.getlist');
-        // Get number of logrotate files possible
-        $db = \OMV\Config\Database::getInstance();
-        $scriptsobject = $db->get('conf.service.scripts');
-        $servicelogretentionlength = $scriptsobject->get('servicelogretentionlength');
-
-        // read base log as csv
+        // grab the main log plus any rotated logs
+        $pattern = '/var/log/omv-scripts-exec-tracker.log*';
+        $logFiles = glob($pattern);
+        natsort($logFiles);
         $objectsAssoc = [];
-        $logFile = '/var/log/omv-scripts-exec-tracker.log';
-        if (file_exists($logFile) && is_readable($logFile)) {
-            $fh = fopen($logFile, 'r');
-            while (($row = fgetcsv($fh)) !== false) {
-                list($id, $start, $stop, $script, $exitcode, $duration, $runlog, $logsize) = $row;
-                $objectsAssoc[] = [
-                    'id' => $id,
-                    'script' => $script,
-                    'start' => $start,
-                    'stop' => $stop,
-                    'exitcode' => (int)$exitcode,
-                    'duration' => $duration,
-                    'runlog' => $runlog,
-                    'logsize' => (int)$logsize,
-                    'logliststatus' => "live",
-                ];
+        foreach ($logFiles as $file) {
+            if (!is_file($file) || !is_readable($file)) {
+                continue;
             }
-            fclose($fh);
+            // prefix with zlib wrapper if compressed
+            $path = $this->isGz($file) ? "compress.zlib://{$file}" : $file;
+            // read log as csv
+            if ($fh = @fopen($path, 'r')) {
+                while (($row = fgetcsv($fh)) !== false) {
+                    list($id, $start, $stop, $script, $exitcode, $duration, $runlog, $logsize) = $row;
+                    $objectsAssoc[] = [
+                        'id' => $id,
+                        'script' => $script,
+                        'start' => $start,
+                        'stop' => $stop,
+                        'exitcode' => (int)$exitcode,
+                        'duration' => $duration,
+                        'runlog' => $runlog,
+                        'logsize' => (int)$logsize,
+                        'logfile' => $file
+                    ];
+                }
+                fclose($fh);
+            }
         }
 
         // read logrotated logs as csv
@@ -753,9 +757,36 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
     {
         // Validate the RPC caller context.
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
-        // delete id from log file
-        // This can only be done on the non gzipped files.
-        if ($params['logliststatus'] == "live") {
+        $logfile = $params['logfile'];
+        $id = $params['id'];
+        $gz = $this->isGz($logfile);
+        if ($gz && is_readable($logfile)) {
+            $tmp = sprintf('%s.tmp', $logfile);
+            $in = gzopen($logfile, 'rb');
+            $out = fopen($tmp, 'w');
+            if ($in && $out) {
+                while (!gzeof($in)) {
+                    $line = gzgets($in);
+                    // only write lines that do NOT start with our ID:
+                    if (!preg_match("/^{$id},/", $line)) {
+                        fwrite($out, $line);
+                    }
+                }
+                gzclose($in);
+                fclose($out);
+                $in2 = fopen($tmp, 'rb');
+                $out2 = gzopen($logfile, 'wb9');
+                if ($in2 && $out2) {
+                    while (!feof($in2)) {
+                        gzwrite($out2, fread($in2, 8192));
+                    }
+                    fclose($in2);
+                    gzclose($out2);
+                }
+                unlink($tmp);
+            }
+        } elseif (is_writable($logfile)) {
+            // delete id from log file
             $cmdArgs = [];
             $cmdArgs[] = 'sed';
             $cmdArgs[] = '-i';
@@ -765,14 +796,8 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             $cmd->execute($search);
         }
         // delete log file
-        $runlog = $params['runlog'];
-        if (file_exists($runlog)) {
-            unlink($runlog);
-        } else {
-            $runlog = $runlog . '.gz';
-            if (file_exists($runlog)) {
-                unlink($runlog);
-            }
+        if (file_exists($params['runlog'])) {
+            @unlink($params['runlog']);
         }
     }
 
@@ -784,40 +809,54 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             use ($params) {
                 $output = [];
                 $runlog = $params['runlog'];
-                $runloggz = $runlog . '.gz';
-                $found = false;
-                $catcmd = '';
-                if (file_exists($runlog)) {
-                    $catcmd = 'cat';
-                } elseif (file_exists($runloggz)) {
-                    $catcmd = 'zcat';
-                } else {
-                    // as there is a good likelyhood of the log file having been removed by logrotate, give a friendly message.
-                    // The following is a workaround to $output[] = "Scripts Log Viewer - Unable to locate file " . $runlog; not resulting in text in the box.
+                // if file doesn't exist, look for logrotated version
+                if (!is_readable($runlog)) {
+                    $candidates = glob($runlog . '.*');
+                    if ($candidates) {
+                        // sort by modification time, newest first
+                        usort($candidates, function($a, $b) {
+                            return filemtime($b) - filemtime($a);
+                        });
+                        foreach ($candidates as $f) {
+                            if (is_readable($f)) {
+                                $runlog = $f;
+                                file_put_contents($bgOutputFilename,
+                                  "using logrotated log file " . $runlog .
+                                  PHP_EOL . PHP_EOL, FILE_APPEND);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (is_readable($runlog)) {
+                    $gz = $this->isGz($runlog);
                     $cmdArgs = [];
-                    $cmdArgs[] = "echo";
-                    // ToDo: make this message translated.
-                    $cmdArgs[] = "Scripts Log Viewer - Unable to locate file " . $runlog;
+                    $cmdArgs[] = $gz ? 'zcat' : 'cat';
+                    $cmdArgs[] = $runlog;
                     $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
                     $cmdLine = $cmd->getCommandLine();
                     if (0 !== $this->exec($cmdLine, $output, $bgOutputFilename)) {
                         throw new \OMV\ExecException($cmdLine, $output);
                     }
-                    return $output;
-                }
-
-                $cmdArgs = [];
-                $cmdArgs[] = $catcmd;
-                $cmdArgs[] = $runlog;
-                $cmd = new \OMV\System\Process($cmdArgs);
-                $cmd->setRedirect2to1();
-                $cmdLine = $cmd->getCommandLine();
-                if (0 !== $this->exec($cmdLine, $output, $bgOutputFilename)) {
-                    throw new \OMV\ExecException($cmdLine, $output);
+                } else {
+                    throw new \OMV\ExecException('run log not found - ' . $runlog);
                 }
                 return $output;
             }
         );
+    }
+    
+    private function isGz($path)
+    {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $type = $finfo->file($path);
+        if (in_array($type, ['application/x-gzip','application/gzip'], true)) {
+            return true;
+        } elseif (strpos($type, 'text/') === 0) {
+            return false;
+        } else {
+            throw new \OMV\Exception('bad file ' . $path);
+        }
     }
 }

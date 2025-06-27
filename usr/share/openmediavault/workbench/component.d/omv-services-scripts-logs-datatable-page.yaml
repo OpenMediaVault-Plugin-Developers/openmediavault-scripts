@@ -51,24 +51,18 @@ data:
         sortable: true
         cellTemplateName: template
         cellTemplateConfig: '{{ logsize | tobytes | binaryunit | notavailable("-") }}'
-      - name: _('List Status')
-        prop: logliststatus
+      - name: _('Log File')
+        prop: logfile
         flexGrow: 1
         sortable: true
         hidden: true
     actions:
       - type: iconButton
-        tooltip: _('Delete  --  Archived list entries can not be removed')
+        tooltip: _('Delete')
         icon: delete
         enabledConstraints:
           minSelected: 1
           maxSelected: 1
-          constraint:
-            - operator: eq
-              arg0:
-                prop: logliststatus
-              arg1:
-                value: 'live'
         execute:
           type: request
           request:
@@ -77,7 +71,7 @@ data:
             params:
               id: '{{ _selected[0].id }}'
               runlog: '{{ _selected[0].runlog }}'
-              logliststatus: '{{ _selected[0].logliststatus }}'
+              logfile: '{{ _selected[0].logfile }}'
       - type: iconButton
         tooltip: _('View Log')
         icon: mdi:file-document-outline
@@ -96,3 +90,4 @@ data:
                 method: viewLog
                 params:
                   runlog: '{{ _selected[0].runlog }}'
+                  logfile: '{{ _selected[0].logfile }}'

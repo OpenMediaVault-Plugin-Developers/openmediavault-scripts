@@ -17,6 +17,9 @@ case "$1" in
             omv-confdbadm migrate "conf.service.scripts" "${2}"
         fi
 
+        # fix perms
+        chmod 755 /var/log/omv-scripts-exec-tracker
+
         # rewrite jobs
         omv-salt deploy run --no-color --quiet scripts || :
     ;;
