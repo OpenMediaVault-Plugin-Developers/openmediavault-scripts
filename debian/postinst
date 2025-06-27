@@ -18,7 +18,9 @@ case "$1" in
         fi
 
         # fix perms
-        chmod 755 /var/log/omv-scripts-exec-tracker
+        logdir="/var/log/omv-scripts-exec-tracker"
+        mkdir -p "${logdir}"
+        chmod 755 "${logdir}"
 
         # rewrite jobs
         omv-salt deploy run --no-color --quiet scripts || :
