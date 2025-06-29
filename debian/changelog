@@ -1,3 +1,9 @@
+openmediavault-scripts (7.3.2) stable; urgency=low
+
+  * Fix typo in database field name
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Sun, 29 Jun 2025 16:14:02 -0500
+
 openmediavault-scripts (7.3.1) stable; urgency=low
 
   * Add further configuration for log cleanup
