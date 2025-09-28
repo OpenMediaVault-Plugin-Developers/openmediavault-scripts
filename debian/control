@@ -9,7 +9,7 @@ Homepage: http://omv-extras.org/
 
 Package: openmediavault-scripts
 Architecture: all
-Depends: openmediavault (>= 7.1),
+Depends: openmediavault (>= 8),
          openmediavault-sharerootfs,
          pylint,
          shellcheck,
