@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Andi Chandler <andi@gowling.com>, 2024
+# Andi Chandler <andi@gowling.com>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-27 07:53-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
-"Last-Translator: Andi Chandler <andi@gowling.com>, 2024\n"
+"Last-Translator: Andi Chandler <andi@gowling.com>, 2025\n"
 "Language-Team: English (United Kingdom) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/en_GB/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,6 +34,8 @@ msgid ""
 "Are you sure you want to create a new git repo?  This will erase all "
 "history!"
 msgstr ""
+"Are you sure you want to create a new git repo?  This will erase all "
+"history!"
 
 msgid "Are you sure you want to sync changes from the file?"
 msgstr "Are you sure you want to sync changes from the file?"
@@ -72,7 +74,7 @@ msgid "File size"
 msgstr "File size"
 
 msgid "Git"
-msgstr ""
+msgstr "Git"
 
 msgid "Import"
 msgstr "Import"
@@ -87,19 +89,19 @@ msgid "Import one existing script ..."
 msgstr "Import one existing script ..."
 
 msgid "Initialize new git repo ..."
-msgstr ""
+msgstr "Initialise new git repo ..."
 
 msgid "Logs"
-msgstr ""
+msgstr "Logs"
 
 msgid "Name"
 msgstr "Name"
 
 msgid "Number of separate compressed logs to keep"
-msgstr ""
+msgstr "Number of separate compressed logs to keep"
 
 msgid "Number of units before delete"
-msgstr ""
+msgstr "Number of units before delete"
 
 msgid "Optional. Will use downloaded name if one is not specified."
 msgstr "Optional. Will use downloaded name if one is not specified."
@@ -108,7 +110,7 @@ msgid "Path"
 msgstr "Path"
 
 msgid "Remove empty log files?"
-msgstr ""
+msgstr "Remove empty log files?"
 
 msgid "Schedule"
 msgstr "Schedule"
@@ -123,7 +125,7 @@ msgid "Settings"
 msgstr "Settings"
 
 msgid "Show all file changes ..."
-msgstr ""
+msgstr "Show all file changes ..."
 
 msgid "Sync changes from file"
 msgstr "Sync changes from file"
@@ -155,17 +157,21 @@ msgid ""
 "if you choose days, then the log files will be retained for this number of "
 "days"
 msgstr ""
+"if you choose days, then the log files will be retained for this number of "
+"days"
 
 msgid "if you choose yes then empty log files will be removed"
-msgstr ""
+msgstr "if you choose yes then empty log files will be removed"
 
 msgid "init git repo"
-msgstr ""
+msgstr "init git repo"
 
 msgid "show file changes"
-msgstr ""
+msgstr "show file changes"
 
 msgid ""
 "this is the number of files that will be kept, with a new file being created"
 " each period"
 msgstr ""
+"this is the number of files that will be kept, with a new file being created"
+" each period"

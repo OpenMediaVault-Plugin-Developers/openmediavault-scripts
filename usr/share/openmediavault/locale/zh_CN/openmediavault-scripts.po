@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# songming <by@songming.me>, 2024
+# songming <by@songming.me>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-27 07:53-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
-"Last-Translator: songming <by@songming.me>, 2024\n"
+"Last-Translator: songming <by@songming.me>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,7 +33,7 @@ msgstr "从 URL 地址添加"
 msgid ""
 "Are you sure you want to create a new git repo?  This will erase all "
 "history!"
-msgstr ""
+msgstr "您确定要创建新的 git 源吗？这将清除所有历史！"
 
 msgid "Are you sure you want to sync changes from the file?"
 msgstr "您确定要同步文件的变更？"
@@ -72,7 +72,7 @@ msgid "File size"
 msgstr "文件大小"
 
 msgid "Git"
-msgstr ""
+msgstr "Git"
 
 msgid "Import"
 msgstr "导入"
@@ -87,19 +87,19 @@ msgid "Import one existing script ..."
 msgstr "导入一个已有脚本 ..."
 
 msgid "Initialize new git repo ..."
-msgstr ""
+msgstr "初始化新 git 源 ..."
 
 msgid "Logs"
-msgstr ""
+msgstr "日志"
 
 msgid "Name"
 msgstr "名称"
 
 msgid "Number of separate compressed logs to keep"
-msgstr ""
+msgstr "要保留的独立压缩日志数量"
 
 msgid "Number of units before delete"
-msgstr ""
+msgstr "删除前的单位数量"
 
 msgid "Optional. Will use downloaded name if one is not specified."
 msgstr "选项。如果没有指定将使用已下载的名字。"
@@ -108,7 +108,7 @@ msgid "Path"
 msgstr "路径"
 
 msgid "Remove empty log files?"
-msgstr ""
+msgstr "移出空日志文件？"
 
 msgid "Schedule"
 msgstr "计划"
@@ -123,7 +123,7 @@ msgid "Settings"
 msgstr "设置"
 
 msgid "Show all file changes ..."
-msgstr ""
+msgstr "显示所有文件变更 ..."
 
 msgid "Sync changes from file"
 msgstr "同步文件中的变更"
@@ -150,18 +150,18 @@ msgstr "URL"
 msgid ""
 "if you choose days, then the log files will be retained for this number of "
 "days"
-msgstr ""
+msgstr "如果你选择天，则日志文件将会保存这些天数"
 
 msgid "if you choose yes then empty log files will be removed"
-msgstr ""
+msgstr "如果你选择是则会删除空日志文件"
 
 msgid "init git repo"
-msgstr ""
+msgstr "初始化 git 源"
 
 msgid "show file changes"
-msgstr ""
+msgstr "显示文件变更"
 
 msgid ""
 "this is the number of files that will be kept, with a new file being created"
 " each period"
-msgstr ""
+msgstr "这是要保存文件的数量，每个周期会创建一个新文件"
