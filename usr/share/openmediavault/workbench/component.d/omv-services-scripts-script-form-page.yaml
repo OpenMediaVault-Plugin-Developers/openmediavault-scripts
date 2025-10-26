@@ -32,7 +32,9 @@ data:
         store:
           data:
             - [ 'conf', 'conf' ]
+            - [ 'json', 'json' ]
             - [ 'ksh', 'ksh' ]
+            - [ 'php', 'php' ]
             - [ 'sh', 'sh' ]
             - [ 'txt', 'txt' ]
       - type: codeEditor
