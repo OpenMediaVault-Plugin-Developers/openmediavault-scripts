@@ -227,17 +227,10 @@ data:
           minSelected: 1
           maxSelected: 1
           constraint:
-            - operator: and
+            - operator: in
               arg0:
-                operator: ne
-                arg0:
-                  prop: ext
-                arg1: 'conf'
-              arg1:
-                operator: ne
-                arg0:
-                  prop: ext
-                arg1: 'txt'
+                prop: ext
+              arg1: ['sh','ksh','py']
         execute:
           type: taskDialog
           taskDialog:
