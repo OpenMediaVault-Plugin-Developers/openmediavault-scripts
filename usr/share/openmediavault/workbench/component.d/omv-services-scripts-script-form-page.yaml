@@ -47,6 +47,13 @@ data:
         label: _('Testing arguments')
         value: ''
         hint: _('These arguments are used for test runs in the Scripts tab only.<br/>They will not be used for scheduled jobs.')
+        modifiers:
+          - type: visible
+            constraint:
+              operator: in
+              arg0:
+                prop: ext
+              arg1: ["ksh","php","sh"]
     buttons:
       - template: submit
         execute:
