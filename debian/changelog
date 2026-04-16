@@ -1,3 +1,9 @@
+openmediavault-scripts (8.0.2) stable; urgency=low
+
+  * Fix json script saving
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Thu, 16 Apr 2026 17:33:37 +0000
+
 openmediavault-scripts (8.0.1) stable; urgency=low
 
   * Add json and php extensions
