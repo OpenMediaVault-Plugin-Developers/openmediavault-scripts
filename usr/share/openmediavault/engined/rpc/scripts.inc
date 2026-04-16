@@ -208,8 +208,17 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $db = \OMV\Config\Database::getInstance();
         $sfpath = $this->getScriptsPath($context);
         // Prepare the configuration object.
+        $body = $params['body'];
+        if (!is_string($body)) {
+            $body = json_encode($body, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        }
+        unset($params['body']);
         $object = new \OMV\Config\ConfigObject('conf.service.scripts.file');
         $object->setAssoc($params);
+        // Set body with validation disabled: OMV's schema validator decodes
+        // any valid JSON string back to an object before type-checking, so
+        // JSON file content would always fail string validation.
+        $object->set('body', $body, FALSE);
         // Set the configuration object.
         $isNew = $object->isNew();
         if (TRUE === $isNew) {
