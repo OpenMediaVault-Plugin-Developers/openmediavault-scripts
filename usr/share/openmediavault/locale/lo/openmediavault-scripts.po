@@ -3,9 +3,6 @@
 # This file is distributed under the same license as the openmediavault-scripts package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
-# Translators:
-# Giovanni Scafora <scafora.giovanni@gmail.com>, 2026
-# 
 #, fuzzy
 msgid ""
 msgstr ""
@@ -13,169 +10,154 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-27 07:53-0500\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
-"Last-Translator: Giovanni Scafora <scafora.giovanni@gmail.com>, 2026\n"
-"Language-Team: Italian (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/it/)\n"
+"Language-Team: Lao (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/lo/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Language: lo\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "Add"
-msgstr "Aggiungi"
+msgstr ""
 
 msgid "Add Python"
-msgstr "Aggiungi Python"
+msgstr ""
 
 msgid "Add from URL"
-msgstr "Aggiungi da URL"
+msgstr ""
 
 msgid ""
 "Are you sure you want to create a new git repo?  This will erase all "
 "history!"
 msgstr ""
-"Sei sicuro di voler creare un nuovo repository Git? Questo cancellerà tutta "
-"la cronologia!"
 
 msgid "Are you sure you want to sync changes from the file?"
-msgstr "Sei sicuro di voler sincronizzare le modifiche dal file?"
+msgstr ""
 
 msgid "Changes have been synced from file."
-msgstr "Le modifiche sono state sincronizzate dal file."
+msgstr ""
 
 msgid "Create"
-msgstr "Crea"
+msgstr ""
 
 msgid "Created scheduled job."
-msgstr "Job pianificato creato."
+msgstr ""
 
 msgid "Created script."
-msgstr "Script creato."
+msgstr ""
 
 msgid "Docs"
-msgstr "Documentazione"
+msgstr ""
 
 msgid "Downloading script ..."
-msgstr "Download dello script in corso..."
+msgstr ""
 
 msgid "Edit"
-msgstr "Modifica"
+msgstr ""
 
 msgid "Edit Python"
-msgstr "Modifica Python"
+msgstr ""
 
 msgid "Edit scheduled job."
-msgstr "Modifica job pianificato."
+msgstr ""
 
 msgid "Edit shell script."
-msgstr "Modifica script shell."
+msgstr ""
 
 msgid "File size"
-msgstr "Dimensione file"
+msgstr ""
 
 msgid "Git"
-msgstr "Git"
+msgstr ""
 
 msgid "Import"
-msgstr "Importa"
+msgstr ""
 
 msgid "Import existing scripts ..."
-msgstr "Importa script esistenti..."
+msgstr ""
 
 msgid "Import one"
-msgstr "Importa uno"
+msgstr ""
 
 msgid "Import one existing script ..."
-msgstr "Importa uno script esistente..."
+msgstr ""
 
 msgid "Initialize new git repo ..."
-msgstr "Inizializza un nuovo repository Git..."
+msgstr ""
 
 msgid "Logs"
-msgstr "Log"
+msgstr ""
 
 msgid "Name"
-msgstr "Nome"
+msgstr ""
 
 msgid "Number of separate compressed logs to keep"
-msgstr "Numero di log compressi separati da conservare"
+msgstr ""
 
 msgid "Number of units before delete"
-msgstr "Numero di elementi prima dell’eliminazione"
+msgstr ""
 
 msgid "Optional. Will use downloaded name if one is not specified."
 msgstr ""
-"Opzionale. Verrà utilizzato il nome scaricato se non ne viene specificato "
-"uno."
 
 msgid "Path"
-msgstr "Percorso"
+msgstr ""
 
 msgid "Remove empty log files?"
-msgstr "Rimuovere i file di log vuoti?"
+msgstr ""
 
 msgid "Schedule"
-msgstr "Pianificazione"
+msgstr ""
 
 msgid "Script has been added."
-msgstr "Script aggiunto."
+msgstr ""
 
 msgid "Scripts"
-msgstr "Script"
+msgstr ""
 
 msgid "Settings"
-msgstr "Impostazioni"
+msgstr ""
 
 msgid "Show all file changes ..."
-msgstr "Mostra tutte le modifiche ai file..."
+msgstr ""
 
 msgid "Sync changes from file"
-msgstr "Sincronizza le modifiche dal file"
+msgstr ""
 
 msgid "Syncing changes from file ..."
-msgstr "Sincronizzazione delle modifiche dal file in corso..."
+msgstr ""
 
 msgid "The field should only contain * or a comma separated list of values."
 msgstr ""
-"Il campo deve contenere solo * oppure un elenco di valori separati da "
-"virgola."
 
 msgid ""
 "This will import one or more scripts in the selected folder.<br/>It will not"
 " import any scripts that already exist in the plugin."
 msgstr ""
-"Questo importerà uno o più script nella cartella selezionata.<br/>Non "
-"verranno importati gli script già presenti nel plugin."
 
 msgid ""
 "This will import one script from the specified path.<br/>It will not import "
 "a script that already exist in the plugin."
 msgstr ""
-"Questo importerà uno script dal percorso specificato.<br/>Non verrà "
-"importato uno script già presente nel plugin."
 
 msgid "URL"
-msgstr "URL"
+msgstr ""
 
 msgid ""
 "if you choose days, then the log files will be retained for this number of "
 "days"
 msgstr ""
-"Se scegli i giorni, i file di log saranno conservati per questo numero di "
-"giorni."
 
 msgid "if you choose yes then empty log files will be removed"
-msgstr "Se scegli Sì, i file di log vuoti saranno rimossi."
+msgstr ""
 
 msgid "init git repo"
-msgstr "Inizializza repository Git"
+msgstr ""
 
 msgid "show file changes"
-msgstr "Mostra modifiche ai file"
+msgstr ""
 
 msgid ""
 "this is the number of files that will be kept, with a new file being created"
 " each period"
 msgstr ""
-"questo è il numero di file che saranno conservati, con la creazione di un "
-"nuovo file a ogni periodo"
