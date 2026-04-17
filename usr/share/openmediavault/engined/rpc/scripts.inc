@@ -183,7 +183,10 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         // Get configuration data.
         $db = \OMV\Config\Database::getInstance();
         $objects = $db->getAssoc('conf.service.scripts.file');
-        // Filter the result.
+        // Filter to only include scripts with schedulable extensions.
+        $objects = array_values(array_filter($objects, function($object) {
+            return in_array(strtolower($object['ext']), ['py', 'php', 'sh', 'ksh']);
+        }));
         return ($objects);
     }
 
