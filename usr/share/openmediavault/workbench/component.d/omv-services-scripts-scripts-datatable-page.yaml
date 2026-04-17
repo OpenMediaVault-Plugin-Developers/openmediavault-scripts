@@ -230,7 +230,7 @@ data:
             - operator: in
               arg0:
                 prop: ext
-              arg1: ['sh','ksh','py']
+              arg1: ['sh','ksh','py', 'php']
         execute:
           type: taskDialog
           taskDialog:
