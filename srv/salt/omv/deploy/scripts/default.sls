@@ -49,7 +49,7 @@ configure_scripts_scheduled_jobs:
         sfpath: {{ sfpath }}
     - user: root
     - group: root
-    - mode: 644
+    - mode: '0644'
 
 {% endif %}
 
@@ -67,7 +67,7 @@ configure_scripts_log_rotation:
         logretentiontype: {{ config.logretentiontype }}
     - user: root
     - group: root
-    - mode: 644
+    - mode: '0644'
 
 configure_scripts_log_rotation_file:
   file.touch:
