@@ -845,6 +845,10 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             return true;
         } elseif (strpos($type, 'text/') === 0) {
             return false;
+        } elseif (in_array($type, ['application/x-empty','inode/x-empty'], true)) {
+            // a freshly logrotated main log is empty until the next run
+            // writes to it; treat it as a plain (empty) file, not gzip
+            return false;
         } else {
             throw new \OMV\Exception('bad file ' . $path);
         }
