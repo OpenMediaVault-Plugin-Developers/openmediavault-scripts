@@ -1,3 +1,10 @@
+openmediavault-scripts (8.0.4) stable; urgency=low
+
+  * Handle a freshly rotated main log and treat it as empty instead of
+    gzip
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Sun, 31 May 2026 20:33:02 +0000
+
 openmediavault-scripts (8.0.3) stable; urgency=low
 
   * Allow php scripts to be executed
