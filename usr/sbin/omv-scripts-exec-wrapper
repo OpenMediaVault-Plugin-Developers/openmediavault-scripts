@@ -11,11 +11,12 @@
 # version: 0.0.1
 
 export LC_ALL=C.UTF-8
+umask 027
 
 logCsv=/var/log/omv-scripts-exec-tracker.log
 logDir=/var/log/omv-scripts-exec-tracker
-mkdir -p "${logDir}"
-chmod 755 "${logDir}"
+# shellcheck disable=SC2174 # /var/log always exists; -p here is just for idempotency
+mkdir -p -m 750 "${logDir}"
 
 script="$1"; shift
 scriptName=$(basename "${script}")
@@ -28,6 +29,7 @@ startHuman=$(date '+%Y-%m-%d %H:%M:%S.%3N')
 
 "${script}" "$@" 2>&1 | tee "${runLog}"
 rc=${PIPESTATUS[0]}
+chmod 640 "${runLog}"
 
 endTime=$(date +%s%N)
 endHuman=$(date '+%Y-%m-%d %H:%M:%S.%3N')
@@ -43,15 +45,36 @@ fi
 id=$(uuid)
 logSize=$(stat -c%s "${runLog}")
 
-printf '%s,%s,%s,%s,%d,%s,%s,%d\n' \
-  "${id}" \
-  "${startHuman}" \
-  "${endHuman}" \
-  "${scriptName}" \
-  "${rc}" \
-  "${dur}" \
-  "${runLog}" \
-  "${logSize}" \
->> "${logCsv}"
+# Append this run to the tracker log. While holding the lock we also prune any
+# rows whose run-log (or its rotated/compressed variant) no longer exists so
+# the tracker doesn't accumulate dead entries as run logs age out via
+# logrotate. The current run's row isn't pruned: its run-log was just written
+# above and the row is only appended afterwards.
+lockFile=/run/lock/omv-scripts-exec-tracker.lock
+(
+  flock 9
+  if [ -s "${logCsv}" ]; then
+    tmpCsv=$(mktemp /var/log/omv-scripts-exec-tracker.tmp.XXXXXX)
+    while IFS=, read -r c_id c_start c_stop c_name c_rc c_dur c_runlog c_size; do
+      if compgen -G "${c_runlog}*" > /dev/null 2>&1; then
+        printf '%s,%s,%s,%s,%s,%s,%s,%s\n' \
+          "${c_id}" "${c_start}" "${c_stop}" "${c_name}" \
+          "${c_rc}" "${c_dur}" "${c_runlog}" "${c_size}"
+      fi
+    done < "${logCsv}" > "${tmpCsv}"
+    mv "${tmpCsv}" "${logCsv}"
+  fi
+  printf '%s,%s,%s,%s,%d,%s,%s,%d\n' \
+    "${id}" \
+    "${startHuman}" \
+    "${endHuman}" \
+    "${scriptName}" \
+    "${rc}" \
+    "${dur}" \
+    "${runLog}" \
+    "${logSize}" \
+  >> "${logCsv}"
+  chmod 640 "${logCsv}"
+) 9>"${lockFile}"
 
 exit "${rc}"

@@ -292,9 +292,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                     $cmdArgs = [];
                     $cmdArgs[] = '/usr/sbin/omv-scripts-exec-wrapper';
                     $cmdArgs[] = $scriptFile;
-                    if (strlen($script->get('testargs')) > 0) {
-                        $cmdArgs[] = $script->get('testargs');
-                    }
+                    $cmdArgs = array_merge($cmdArgs, $this->splitArgs($script->get('testargs')));
                     $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
                     $cmdLine = $cmd->getCommandLine();
@@ -333,6 +331,11 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                             file_put_contents($bgOutputFilename, 'Using pylint ...' . PHP_EOL . PHP_EOL, FILE_APPEND);
                             $cmdArgs[] = 'pylint';
                             break;
+                        case 'php':
+                            file_put_contents($bgOutputFilename, 'Using php -l ...' . PHP_EOL . PHP_EOL, FILE_APPEND);
+                            $cmdArgs[] = 'php';
+                            $cmdArgs[] = '-l';
+                            break;
                     }
                     $cmdArgs[] = $scriptFile;
                     $cmd = new \OMV\System\Process($cmdArgs);
@@ -355,9 +358,28 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->validateMethodParams($params, 'rpc.scripts.addurl');
         // Verify that shared folder is set
         $sfpath = $this->getScriptsPath($context);
-        // download script
+        // Only allow http(s) URLs. This avoids fetching arbitrary local
+        // files or internal endpoints via schemes like file://, ftp:// or
+        // gopher:// (SSRF).
         $url = $params['url'];
-        $script = file_get_contents($url);
+        $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+        if (!in_array($scheme, ['http', 'https'], true)) {
+            throw new \OMV\Exception(gettext('Only http:// and https:// URLs are supported.'));
+        }
+        // download script
+        $ctx = stream_context_create([
+            'http' => [
+                'timeout' => 30,
+                'follow_location' => 1,
+                'max_redirects' => 5,
+                'user_agent' => 'openmediavault-scripts',
+            ],
+        ]);
+        $script = @file_get_contents($url, false, $ctx);
+        if ($script === false) {
+            throw new \OMV\Exception(sprintf(
+                gettext('Failed to download script from %s'), $url));
+        }
         // Put script in a temp file
         if ($script !== false) {
             if ($params['name'] == '') {
@@ -537,6 +559,33 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         return ($ext);
     }
 
+    private function splitArgs($argstr)
+    {
+        $args = [];
+        $argstr = (string) $argstr;
+        if (strlen(trim($argstr)) === 0) {
+            return $args;
+        }
+        // Split on whitespace while honoring single and double quotes so that
+        // an argument containing spaces is passed as a single argument. This
+        // matches how the shell tokenizes the scheduled (cron) command line.
+        if (preg_match_all('/"(?:\\\\.|[^"\\\\])*"|\'[^\']*\'|\S+/', $argstr, $matches)) {
+            foreach ($matches[0] as $token) {
+                $len = strlen($token);
+                if ($len >= 2) {
+                    $first = $token[0];
+                    $last = $token[$len - 1];
+                    if (($first === '"' && $last === '"') ||
+                        ($first === "'" && $last === "'")) {
+                        $token = substr($token, 1, -1);
+                    }
+                }
+                $args[] = $token;
+            }
+        }
+        return $args;
+    }
+
     public function doGit($params, $context)
     {
         // Validate the RPC caller context.
@@ -638,6 +687,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $params['dayofmonth'] = implode(",", $params['dayofmonth']);
         $params['month'] = implode(",", $params['month']);
         $params['dayofweek'] = implode(",", $params['dayofweek']);
+        $params['comment'] = str_replace(['\\', '"', '`', '$'], '', $params['comment']);
         // Prepare the configuration object.
         $object = new \OMV\Config\ConfigObject('conf.service.scripts.job');
         $db = \OMV\Config\Database::getInstance();
@@ -681,10 +731,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                     $cmdArgs = [];
                     $cmdArgs[] = '/usr/sbin/omv-scripts-exec-wrapper';
                     $cmdArgs[] = $scriptFile;
-                    $args = $job->get('args');
-                    if (strlen($args) > 0) {
-                        $cmdArgs[] = $job->get('args');
-                    }
+                    $cmdArgs = array_merge($cmdArgs, $this->splitArgs($job->get('args')));
                     $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
                     $cmdLine = $cmd->getCommandLine();

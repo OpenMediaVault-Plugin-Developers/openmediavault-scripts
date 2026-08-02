@@ -46,6 +46,13 @@ data:
         prop: sendemail
         flexGrow: 1
         sortable: true
+        hidden: true
+        cellTemplateName: checkIcon
+      - name: _('Email on error')
+        prop: emailonerror
+        flexGrow: 1
+        sortable: true
+        hidden: true
         cellTemplateName: checkIcon
       - name: _('Comment')
         prop: comment

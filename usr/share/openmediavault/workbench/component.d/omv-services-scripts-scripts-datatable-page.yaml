@@ -200,7 +200,7 @@ data:
               uuid: '{{ _selected[0].uuid }}'
       - type: iconButton
         icon: mdi:playlist-check
-        tooltip: _('Check using Shellcheck or pylint')
+        tooltip: _('Check using Shellcheck, pylint or php -l')
         enabledConstraints:
           minSelected: 1
           maxSelected: 1
@@ -208,7 +208,7 @@ data:
             - operator: in
               arg0:
                 prop: ext
-              arg1: ['sh','ksh','py']
+              arg1: ['sh','ksh','py','php']
         execute:
           type: taskDialog
           taskDialog:

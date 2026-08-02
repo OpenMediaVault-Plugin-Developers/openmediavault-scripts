@@ -110,6 +110,10 @@
               "sendemail": {
                 "type": "boolean"
               },
+              "emailonerror": {
+                "type": "boolean",
+                "default": false
+              },
               "comment": {
                 "type": "string"
               },
