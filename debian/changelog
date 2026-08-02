@@ -1,3 +1,13 @@
+openmediavault-scripts (8.0.5) stable; urgency=low
+
+  * Restrict "Add from URL" to http(s) and report download failures
+  * Support checking php scripts with php -l
+  * Prune tracker log entries whose run log has aged out
+  * Add option to email scheduled job output only on failure
+  * Ensure log files are proper permissions
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Sun, 02 Aug 2026 14:27:38 +0000
+
 openmediavault-scripts (8.0.4) stable; urgency=low
 
   * Handle a freshly rotated main log and treat it as empty instead of
