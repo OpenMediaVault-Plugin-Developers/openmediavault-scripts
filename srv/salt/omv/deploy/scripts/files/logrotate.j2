@@ -10,6 +10,7 @@
     maxsize 5M
     compress
     notifempty
+    create 0640 root root
 }
 
 # this looks for a dummy file that is created by salt.
@@ -33,5 +34,6 @@
         {% endif %}
         find /var/log/omv-scripts-exec-tracker/ -type f -mtime +{{ mtime }} -name "*.gz" -print -delete
         find /var/log/omv-scripts-exec-tracker/ -type f -not -name '*.gz' -name '*.log*' -print0 | xargs -0 -r gzip
+        find /var/log/omv-scripts-exec-tracker/ -type f -name '*.gz' -print0 | xargs -0 -r chmod o-rwx,g-w
     endscript
 }
