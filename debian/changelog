@@ -1,3 +1,10 @@
+openmediavault-scripts (8.0.6) stable; urgency=low
+
+  * Add description field
+  * Escape testing arguments
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Sat, 29 Aug 2026 20:52:56 +0000
+
 openmediavault-scripts (8.0.5) stable; urgency=low
 
   * Restrict "Add from URL" to http(s) and report download failures
