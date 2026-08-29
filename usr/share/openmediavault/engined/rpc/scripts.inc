@@ -405,6 +405,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 $object->set('name', $name);
                 $object->set('ext', $ext);
                 $object->set('body', trim($script));
+                $object->set('description', '');
                 $object->set('testargs', '');
                 // Set the configuration object.
                 $db->assertIsUnique($object, 'name');
@@ -482,6 +483,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             $object->set('name', $name);
             $object->set('ext', $ext);
             $object->set('body', $body);
+            $object->set('description', '');
             $object->set('testargs', '');
             // Set the configuration object.
             try {
@@ -521,6 +523,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             $object->set('name', $name);
             $object->set('ext', $ext);
             $object->set('body', $body);
+            $object->set('description', '');
             $object->set('testargs', '');
             // Set the configuration object.
             $db->assertIsUnique($object, 'name');

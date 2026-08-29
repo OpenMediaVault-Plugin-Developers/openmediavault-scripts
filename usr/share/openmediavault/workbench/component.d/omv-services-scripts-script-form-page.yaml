@@ -24,6 +24,12 @@ data:
           pattern:
             pattern: '^[A-Za-z0-9\_\-\.\:]+$'
             errorData: _('Invalid script name')
+      - type: textarea
+        name: description
+        label: _('Description')
+        value: ''
+        rows: 2
+        hint: _('Optional. A note describing what this script does. Not passed to the script.')
       - type: select
         name: ext
         label: _('Extension')

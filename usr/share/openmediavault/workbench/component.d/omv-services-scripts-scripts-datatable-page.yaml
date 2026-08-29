@@ -25,6 +25,11 @@ data:
         prop: ext
         flexGrow: 1
         sortable: true
+      - name: _('Description')
+        prop: description
+        flexGrow: 2
+        sortable: true
+        hidden: true
       - name: _('Testing Arguments')
         prop: testargs
         flexGrow: 1

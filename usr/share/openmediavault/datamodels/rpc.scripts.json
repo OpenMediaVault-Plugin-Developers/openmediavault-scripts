@@ -76,6 +76,10 @@
           "type": "string",
           "required": true
         },
+        "description": {
+          "type": "string",
+          "required": false
+        },
         "testargs": {
           "type": "string",
           "required": false
