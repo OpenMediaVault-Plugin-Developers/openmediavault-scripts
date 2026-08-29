@@ -580,7 +580,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                         $token = substr($token, 1, -1);
                     }
                 }
-                $args[] = $token;
+                $args[] = escapeshellarg($token);
             }
         }
         return $args;
