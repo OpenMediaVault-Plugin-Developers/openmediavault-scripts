@@ -1,3 +1,21 @@
+openmediavault-scripts (8.0.7) stable; urgency=low
+
+  * Redeploy scripts when the scripts shared folder is modified
+  * Escape % in scheduled job arguments and comments for cron
+  * View run logs with any content type (json, csv, binary)
+  * Validate script names on import and add from URL; quote paths
+  * Validate log paths and ids in view and delete log
+  * Skip gzipping run logs of scripts that are still running
+  * Fix cron field validation patterns
+  * Support importing php and json files
+  * Fix importing and refreshing json scripts failing validation
+  * Reject unknown git commands; never execute files on check
+  * Apply and commit imported scripts immediately
+  * Tokenize test arguments the same way as the shell
+  * Add regression tests
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Sat, 17 Oct 2026 15:20:51 +0000
+
 openmediavault-scripts (8.0.6) stable; urgency=low
 
   * Add description field
