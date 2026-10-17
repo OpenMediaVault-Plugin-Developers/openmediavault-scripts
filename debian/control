@@ -11,6 +11,7 @@ Package: openmediavault-scripts
 Architecture: all
 Depends: openmediavault (>= 8),
          openmediavault-sharerootfs,
+         psmisc,
          pylint,
          shellcheck,
          ${misc:Depends}
