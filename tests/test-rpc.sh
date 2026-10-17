@@ -6,7 +6,9 @@
 # Exercises all Scripts RPC methods: settings CRUD, script CRUD, doCheck/
 # doRun background execution, importChanges/importExistingOne/
 # importExistingFolder, git integration (init/diff), scheduled job CRUD,
-# doJob execution, and the exec log list/view/delete cycle.
+# doJob execution, and the exec log list/view/delete cycle. Also covers
+# input validation (script names, cron fields, log paths), argument quoting,
+# cron % escaping and viewing non-text run logs.
 #
 # Prerequisites:
 #   <sharedfolder> — name or UUID of an existing OMV shared folder to use as
@@ -173,6 +175,16 @@ assert_rpc_bg() {
     return 0
 }
 
+# Assert that a string contains a fixed (non-regex) substring.
+assert_contains() {
+    local desc=$1 haystack=$2 needle=$3
+    if grep -qF -- "$needle" <<<"$haystack"; then
+        _pass "$desc"
+    else
+        _fail "$desc" "'$needle' not found in: ${haystack:0:300}"
+    fi
+}
+
 # Extract a JSON field value.
 json_get() { echo "$1" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('$2',''))" 2>/dev/null; }
 json_uuid() { json_get "$1" "uuid"; }
@@ -212,6 +224,36 @@ for r in rows:
     fi
 }
 
+# Create a script via setScript and track it for cleanup. Sets NEW_UUID.
+create_script() {
+    local name=$1 ext=$2 body=$3 testargs=${4:-}
+    local params
+    params=$(NAME="$name" EXT="$ext" BODY="$body" ARGS="$testargs" python3 -c "
+import json, os
+print(json.dumps({'name': os.environ['NAME'], 'ext': os.environ['EXT'],
+                  'body': os.environ['BODY'], 'testargs': os.environ['ARGS']}))
+")
+    NEW_UUID=""
+    assert_rpc "setScript (create $name.$ext)" "Scripts" "setScript" "$params" || return 1
+    NEW_UUID=$(json_uuid "$RPC_OUT")
+    [ -z "$NEW_UUID" ] && NEW_UUID=$(recover_uuid_from_list "Scripts" "getScriptList" "name" "$name")
+    [ -n "$NEW_UUID" ] && EXTRA_UUIDS+=("$NEW_UUID")
+    return 0
+}
+
+# Find the newest exec log row for a script file name; prints JSON or "".
+find_log_row() {
+    omv-rpc -u admin "Scripts" "getLogList" \
+        '{"start":0,"limit":100,"sortfield":"start","sortdir":"DESC"}' 2>/dev/null \
+        | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+rows = d.get('data', d) if isinstance(d, dict) else d
+match = next((r for r in rows if r.get('script') == '$1'), None)
+print(json.dumps(match) if match else '')
+" 2>/dev/null || echo ""
+}
+
 # ---------------------------------------------------------------------------
 # State
 # ---------------------------------------------------------------------------
@@ -219,7 +261,10 @@ SCRIPT_UUID=""
 SCRIPT2_UUID=""
 IMPORT_ONE_UUID=""
 declare -a IMPORT_FOLDER_UUIDS=()
+declare -a EXTRA_UUIDS=()
 JOB_UUID=""
+JOB2_UUID=""
+CHECK_MARKER=""
 ORIG_SETTINGS=""
 IMPORT_TMPDIR=""
 LOG_ID=""
@@ -240,7 +285,12 @@ cleanup() {
         info "Deleting test job $JOB_UUID"
         omv-rpc -u admin "Scripts" "deleteJob" "{\"uuid\":\"$JOB_UUID\"}" >/dev/null 2>&1 || true
     fi
-    for uuid in "$SCRIPT_UUID" "$SCRIPT2_UUID" "$IMPORT_ONE_UUID" "${IMPORT_FOLDER_UUIDS[@]}"; do
+    if [ -n "$JOB2_UUID" ]; then
+        info "Deleting test job $JOB2_UUID"
+        omv-rpc -u admin "Scripts" "deleteJob" "{\"uuid\":\"$JOB2_UUID\"}" >/dev/null 2>&1 || true
+    fi
+    [ -n "$CHECK_MARKER" ] && rm -f "$CHECK_MARKER"
+    for uuid in "$SCRIPT_UUID" "$SCRIPT2_UUID" "$IMPORT_ONE_UUID" "${IMPORT_FOLDER_UUIDS[@]}" "${EXTRA_UUIDS[@]}"; do
         if [ -n "$uuid" ]; then
             info "Deleting test script $uuid"
             omv-rpc -u admin "Scripts" "deleteScript" "{\"uuid\":\"$uuid\"}" >/dev/null 2>&1 || true
@@ -339,8 +389,14 @@ purge_by_name "Scripts" "getScriptList" "$LIST_PARAMS" "deleteScript" "omvtest_s
 purge_by_name "Scripts" "getScriptList" "$LIST_PARAMS" "deleteScript" "omvtest_import_one"
 purge_by_name "Scripts" "getScriptList" "$LIST_PARAMS" "deleteScript" "omvtest_import_sh"
 purge_by_name "Scripts" "getScriptList" "$LIST_PARAMS" "deleteScript" "omvtest_import_py"
+purge_by_name "Scripts" "getScriptList" "$LIST_PARAMS" "deleteScript" "omvtest_import_php"
+purge_by_name "Scripts" "getScriptList" "$LIST_PARAMS" "deleteScript" "omvtest_import_json"
+purge_by_name "Scripts" "getScriptList" "$LIST_PARAMS" "deleteScript" "omvtest_args"
+purge_by_name "Scripts" "getScriptList" "$LIST_PARAMS" "deleteScript" "omvtest_check_conf"
+purge_by_name "Scripts" "getScriptList" "$LIST_PARAMS" "deleteScript" "omvtest_json"
 JOB_LIST_PARAMS='{"start":0,"limit":100,"sortfield":"execution","sortdir":"ASC"}'
 purge_by_name "Scripts" "getJobList" "$JOB_LIST_PARAMS" "deleteJob" "omvtest_job" "comment"
+purge_by_name "Scripts" "getJobList" "$JOB_LIST_PARAMS" "deleteJob" "omvtest_cronpct 50%" "comment"
 
 # ===========================================================================
 section "Settings"
@@ -487,6 +543,46 @@ assert_rpc_fails "doRun (bad uuid)" "Scripts" "doRun" \
     '{"uuid":"00000000-0000-0000-0000-000000000000"}'
 
 # ===========================================================================
+section "Scripts — name validation, argument quoting, checker safety"
+# ===========================================================================
+
+assert_rpc_fails "setScript rejects name with spaces" "Scripts" "setScript" \
+    '{"name":"omvtest bad name","ext":"sh","body":"echo x","testargs":""}'
+assert_rpc_fails "setScript rejects path traversal in name" "Scripts" "setScript" \
+    '{"name":"../omvtest_escape","ext":"sh","body":"echo x","testargs":""}'
+if [ ! -e "$SFPATH/../omvtest_escape.sh" ]; then
+    _pass "setScript did not write outside the shared folder"
+else
+    _fail "setScript did not write outside the shared folder" "$SFPATH/../omvtest_escape.sh exists"
+    rm -f "$SFPATH/../omvtest_escape.sh"
+fi
+
+# testargs must reach the script tokenized the way sh would (as cron does).
+ARGS_BODY='#!/bin/bash
+for a in "$@"; do echo "[$a]"; done'
+if create_script "omvtest_args" "sh" "$ARGS_BODY" "\"a b\" 'c d' e\\ f \"x\\\"y\" g\"h i\""; then
+    assert_rpc_bg "doRun with quoted testargs" "Scripts" "doRun" "{\"uuid\":\"$NEW_UUID\"}"
+    assert_contains "testargs: double-quoted arg kept whole" "$BG_OUT" "[a b]"
+    assert_contains "testargs: single-quoted arg kept whole" "$BG_OUT" "[c d]"
+    assert_contains "testargs: backslash-escaped space" "$BG_OUT" "[e f]"
+    assert_contains "testargs: escaped quote inside double quotes" "$BG_OUT" '[x"y]'
+    assert_contains "testargs: adjacent pieces join into one arg" "$BG_OUT" "[gh i]"
+fi
+
+# doCheck must never execute a file type it has no checker for.
+CHECK_MARKER=$(mktemp -u /tmp/omvtest_check_marker.XXXXXX)
+if create_script "omvtest_check_conf" "conf" "#!/bin/sh
+touch $CHECK_MARKER"; then
+    assert_rpc_bg "doCheck on .conf reports no checker" "Scripts" "doCheck" \
+        "{\"uuid\":\"$NEW_UUID\"}" "No checker available"
+    if [ ! -e "$CHECK_MARKER" ]; then
+        _pass "doCheck on .conf did not execute the file"
+    else
+        _fail "doCheck on .conf did not execute the file" "$CHECK_MARKER was created"
+    fi
+fi
+
+# ===========================================================================
 section "Scripts — importChanges (external edit picked up from disk)"
 # ===========================================================================
 
@@ -512,6 +608,16 @@ if [ -n "$IMPORT_ONE_UUID" ]; then
 else
     _fail "importExistingOne — script present in getScriptList" "omvtest_import_one not found"
 fi
+if [ -f "$SFPATH/omvtest_import_one.sh" ]; then
+    _pass "importExistingOne — file written to shared folder without manual apply"
+else
+    _fail "importExistingOne — file written to shared folder without manual apply" \
+        "$SFPATH/omvtest_import_one.sh missing"
+fi
+
+printf '#!/bin/bash\necho "bad name"\n' > "$IMPORT_TMPDIR/omvtest bad name.sh"
+assert_rpc_fails "importExistingOne rejects invalid file name" "Scripts" "importExistingOne" \
+    "{\"path\":\"$IMPORT_TMPDIR/omvtest bad name.sh\"}"
 
 assert_rpc_fails "importExistingOne (not a file)" "Scripts" "importExistingOne" \
     "{\"path\":\"$IMPORT_TMPDIR/does_not_exist.sh\"}"
@@ -519,9 +625,12 @@ assert_rpc_fails "importExistingOne (not a file)" "Scripts" "importExistingOne" 
 mkdir -p "$IMPORT_TMPDIR/folder"
 printf '#!/bin/bash\necho "imported sh"\n' > "$IMPORT_TMPDIR/folder/omvtest_import_sh.sh"
 printf '#!/usr/bin/env python3\nprint("imported py")\n' > "$IMPORT_TMPDIR/folder/omvtest_import_py.py"
+printf '<?php\necho "imported php";\n' > "$IMPORT_TMPDIR/folder/omvtest_import_php.php"
+printf '{"imported": "json"}\n' > "$IMPORT_TMPDIR/folder/omvtest_import_json.json"
+printf '#!/bin/bash\necho "skip me"\n' > "$IMPORT_TMPDIR/folder/omvtest skipped name.sh"
 assert_rpc "importExistingFolder" "Scripts" "importExistingFolder" \
     "{\"path\":\"$IMPORT_TMPDIR/folder\"}"
-for n in omvtest_import_sh omvtest_import_py; do
+for n in omvtest_import_sh omvtest_import_py omvtest_import_php omvtest_import_json; do
     u=$(recover_uuid_from_list "Scripts" "getScriptList" "name" "$n")
     if [ -n "$u" ]; then
         _pass "importExistingFolder — $n present in getScriptList"
@@ -530,6 +639,20 @@ for n in omvtest_import_sh omvtest_import_py; do
         _fail "importExistingFolder — $n present in getScriptList" "not found"
     fi
 done
+for f in omvtest_import_php.php omvtest_import_json.json; do
+    if [ -f "$SFPATH/$f" ]; then
+        _pass "importExistingFolder — $f written with its own extension"
+    else
+        _fail "importExistingFolder — $f written with its own extension" "$SFPATH/$f missing"
+    fi
+done
+SKIPPED=$(recover_uuid_from_list "Scripts" "getScriptList" "name" "omvtest skipped name")
+if [ -z "$SKIPPED" ]; then
+    _pass "importExistingFolder — skipped file with invalid name"
+else
+    _fail "importExistingFolder — skipped file with invalid name" "imported as $SKIPPED"
+    IMPORT_FOLDER_UUIDS+=("$SKIPPED")
+fi
 
 # ===========================================================================
 section "addUrl — scheme validation (no network access required)"
@@ -554,7 +677,7 @@ else
     _skip "doGit diff" "no git repo or no script uuid"
 fi
 
-assert_rpc_bg "doGit (unknown command is a no-op, not a crash)" "Scripts" "doGit" \
+assert_rpc_fails "doGit rejects unknown command" "Scripts" "doGit" \
     '{"uuid":"","command":"bogus"}'
 
 # ===========================================================================
@@ -650,6 +773,44 @@ print(json.dumps({
 ")
 assert_rpc_fails "setJob (missing script ref)" "Scripts" "setJob" "$MISSING_SCRIPT_JOB"
 
+if [ -n "$SCRIPT_UUID" ]; then
+    # job_params <minute> <hour> <enable> <args> <comment> <execution> [sendemail]
+    job_params() {
+        python3 -c "
+import json, sys
+m, h, en, args, comment, ex = sys.argv[1:7]
+mail = len(sys.argv) > 7 and sys.argv[7] == 'true'
+print(json.dumps({
+    'uuid': '$OMV_NEW_UUID', 'enable': en == 'true', 'script': '$SCRIPT_UUID',
+    'args': args, 'sendemail': mail, 'emailonerror': False, 'comment': comment,
+    'execution': ex,
+    'minute': [m], 'everynminute': False, 'hour': [h], 'everynhour': False,
+    'dayofmonth': ['*'], 'everyndayofmonth': False, 'month': ['*'], 'dayofweek': ['*']
+}))" "$@"
+    }
+    assert_rpc_fails "setJob rejects minute 99" "Scripts" "setJob" \
+        "$(job_params 99 2 false '' omvtest_bad exactly)"
+    assert_rpc_fails "setJob rejects hour 24" "Scripts" "setJob" \
+        "$(job_params 0 24 false '' omvtest_bad exactly)"
+
+    # An enabled job is written to cron; % must be escaped there or cron
+    # treats it as a newline. Yearly so it will not actually fire; email on
+    # so the comment is written into the mail subject.
+    if assert_rpc "setJob (enabled, % in args and comment)" "Scripts" "setJob" \
+            "$(job_params 0 0 true '--date=%F' 'omvtest_cronpct 50%' yearly true)"; then
+        JOB2_UUID=$(json_uuid "$RPC_OUT")
+        assert_rpc "applyChanges (scripts)" "Config" "applyChanges" \
+            '{"modules":["scripts"],"force":true}'
+        CRON=$(cat /etc/cron.d/omv-scripts-jobs 2>/dev/null)
+        assert_contains "cron line escapes % in args" "$CRON" '--date=\%F'
+        assert_contains "cron line escapes % in comment" "$CRON" 'omvtest_cronpct 50\%'
+        if [ -n "$JOB2_UUID" ]; then
+            assert_rpc "deleteJob (cron % job)" "Scripts" "deleteJob" "{\"uuid\":\"$JOB2_UUID\"}"
+            JOB2_UUID=""
+        fi
+    fi
+fi
+
 assert_rpc_fails "deleteJob (bad uuid)" "Scripts" "deleteJob" \
     '{"uuid":"00000000-0000-0000-0000-000000000000"}'
 
@@ -712,6 +873,53 @@ else
     _skip "deleteLog" "no log row"
     _skip "deleteLog — row removed from getLogList" "no log row"
     _skip "deleteLog — run log file removed" "no log row"
+fi
+
+# ===========================================================================
+section "Exec log — path/id validation and non-text output"
+# ===========================================================================
+
+assert_rpc_fails "viewLog rejects runlog outside log dir" "Scripts" "viewLog" \
+    '{"runlog":"/etc/passwd"}'
+assert_rpc_fails "viewLog rejects ../ traversal" "Scripts" "viewLog" \
+    '{"runlog":"/var/log/omv-scripts-exec-tracker/../../../etc/passwd"}'
+
+VICTIM=$(mktemp /tmp/omvtest_victim.XXXXXX)
+assert_rpc_fails "deleteLog rejects runlog outside log dir" "Scripts" "deleteLog" \
+    "{\"id\":\"00000000-0000-0000-0000-000000000000\",\"logfile\":\"/var/log/omv-scripts-exec-tracker.log\",\"runlog\":\"$VICTIM\"}"
+if [ -f "$VICTIM" ]; then
+    _pass "deleteLog left file outside log dir alone"
+else
+    _fail "deleteLog left file outside log dir alone" "$VICTIM was deleted"
+fi
+rm -f "$VICTIM"
+assert_rpc_fails "deleteLog rejects logfile that is not a tracker csv" "Scripts" "deleteLog" \
+    '{"id":"00000000-0000-0000-0000-000000000000","logfile":"/etc/passwd","runlog":"/var/log/omv-scripts-exec-tracker/x.log"}'
+assert_rpc_fails "deleteLog rejects non-uuid id" "Scripts" "deleteLog" \
+    "{\"id\":\"x'; touch /tmp/omvtest_pwned; '\",\"logfile\":\"/var/log/omv-scripts-exec-tracker.log\",\"runlog\":\"/var/log/omv-scripts-exec-tracker/x.log\"}"
+if [ ! -e /tmp/omvtest_pwned ]; then
+    _pass "deleteLog id was not passed to the shell"
+else
+    _fail "deleteLog id was not passed to the shell" "/tmp/omvtest_pwned created"
+    rm -f /tmp/omvtest_pwned
+fi
+
+# A run log holding JSON is not text/* to libmagic; viewLog must still show it.
+if create_script "omvtest_json" "sh" '#!/bin/sh
+echo "{\"omvtest\": [1, 2, 3]}"'; then
+    assert_rpc_bg "doRun (script printing JSON)" "Scripts" "doRun" "{\"uuid\":\"$NEW_UUID\"}"
+    JSON_ROW=$(find_log_row "omvtest_json.sh")
+    if [ -n "$JSON_ROW" ]; then
+        JSON_RUNLOG=$(json_get "$JSON_ROW" "runlog")
+        assert_rpc_bg "viewLog on JSON run log" "Scripts" "viewLog" \
+            "{\"runlog\":\"$JSON_RUNLOG\"}" "omvtest"
+        omv-rpc -u admin "Scripts" "deleteLog" "$(python3 -c "
+import json
+print(json.dumps({'id': '$(json_get "$JSON_ROW" id)', 'logfile': '$(json_get "$JSON_ROW" logfile)', 'runlog': '$JSON_RUNLOG'}))
+")" >/dev/null 2>&1 || true
+    else
+        _skip "viewLog on JSON run log" "no log row for omvtest_json.sh"
+    fi
 fi
 
 # ===========================================================================
