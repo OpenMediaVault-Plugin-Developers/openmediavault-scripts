@@ -33,7 +33,7 @@
         find /var/log/omv-scripts-exec-tracker/ -type f -mtime +0 -name "*.log" -size 0 -delete
         {% endif %}
         find /var/log/omv-scripts-exec-tracker/ -type f -mtime +{{ mtime }} -name "*.gz" -print -delete
-        find /var/log/omv-scripts-exec-tracker/ -type f -not -name '*.gz' -name '*.log*' -print0 | xargs -0 -r gzip
+        find /var/log/omv-scripts-exec-tracker/ -type f -not -name '*.gz' -name '*.log*' -exec sh -c 'for f; do fuser -s "$f" || gzip "$f"; done' sh {} +
         find /var/log/omv-scripts-exec-tracker/ -type f -name '*.gz' -print0 | xargs -0 -r chmod o-rwx,g-w
     endscript
 }

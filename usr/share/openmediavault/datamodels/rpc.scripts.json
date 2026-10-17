@@ -176,7 +176,7 @@
               },
               {
                 "type": "string",
-                "pattern": "^[0-9]|[1-5][0-9]$"
+                "pattern": "^([0-9]|[1-5][0-9])$"
               }
             ]
           },
@@ -199,7 +199,7 @@
               },
               {
                 "type": "string",
-                "pattern": "^[0-9]|1[0-9]|2[0-3]$"
+                "pattern": "^([0-9]|1[0-9]|2[0-3])$"
               }
             ]
           },
@@ -222,7 +222,7 @@
               },
               {
                 "type": "string",
-                "pattern": "^[1-9]|1[0-2]$"
+                "pattern": "^([1-9]|1[0-2])$"
               }
             ]
           },
@@ -241,7 +241,7 @@
               },
               {
                 "type": "string",
-                "pattern": "^[1-9]|[12][0-9]|3[01]$"
+                "pattern": "^([1-9]|[12][0-9]|3[01])$"
               }
             ]
           },
@@ -269,6 +269,66 @@
             ]
           },
           "required": true
+        }
+      }
+    }
+  },
+  {
+    "type": "rpc",
+    "id": "rpc.scripts.dogit",
+    "params": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "required": true
+        },
+        "command": {
+          "type": "string",
+          "enum": [
+            "init",
+            "diff"
+          ],
+          "required": true
+        }
+      }
+    }
+  },
+  {
+    "type": "rpc",
+    "id": "rpc.scripts.deletelog",
+    "params": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+          "required": true
+        },
+        "runlog": {
+          "type": "string",
+          "required": true
+        },
+        "logfile": {
+          "type": "string",
+          "pattern": "^\\/var\\/log\\/omv-scripts-exec-tracker\\.log(\\.[0-9]+)?(\\.gz)?$",
+          "required": true
+        }
+      }
+    }
+  },
+  {
+    "type": "rpc",
+    "id": "rpc.scripts.viewlog",
+    "params": {
+      "type": "object",
+      "properties": {
+        "runlog": {
+          "type": "string",
+          "required": true
+        },
+        "logfile": {
+          "type": "string"
         }
       }
     }

@@ -18,6 +18,10 @@
 
 class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
 {
+    // Extensions accepted when importing or downloading a script.
+    private const IMPORT_EXTS = ['sh', 'ksh', 'py', 'php', 'json', 'conf', 'txt'];
+    private const LOG_DIR = '/var/log/omv-scripts-exec-tracker';
+
     public function getName()
     {
         return 'Scripts';
@@ -69,23 +73,45 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         return ($sfpath);
     }
 
+    private function assertValidName($name)
+    {
+        // Same rule as the script form; keeps names safe for file paths,
+        // the cron line, salt state ids and the tracker csv.
+        if (!preg_match('/^[A-Za-z0-9_.:-]+$/', (string) $name)) {
+            throw new \OMV\Exception(sprintf(
+                gettext("Invalid script name '%s'. Only letters, numbers and _ - . : are allowed."),
+                $name));
+        }
+    }
+
+    private function applyScriptChanges($context)
+    {
+        \OMV\Rpc\Rpc::call('Config', 'applyChanges', [
+            'modules' => [ 'scripts' ],
+            'force' => TRUE
+        ], $context);
+    }
+
     private function addAndCommit($context, $files, $msg)
     {
         $sfpath = $this->getScriptsPath($context);
         if (is_dir(sprintf("%s/.git", $sfpath))) {
             // git add to repo
             $cmdArgs = [];
-            $cmdArgs[] = sprintf("-C '%s'", $sfpath);
+            $cmdArgs[] = '-C';
+            $cmdArgs[] = escapeshellarg($sfpath);
             $cmdArgs[] = 'add';
-            $cmdArgs = array_merge($cmdArgs, $files);
+            $cmdArgs = array_merge($cmdArgs, array_map('escapeshellarg', $files));
             $cmd = new \OMV\System\Process('git', $cmdArgs);
             $cmd->setQuiet(true);
             $cmd->execute($output, $exitStatus);
             // git commit change
             $cmdArgs = [];
-            $cmdArgs[] = sprintf("-C '%s'", $sfpath);
+            $cmdArgs[] = '-C';
+            $cmdArgs[] = escapeshellarg($sfpath);
             $cmdArgs[] = 'commit';
-            $cmdArgs[] = sprintf("-m 'Updated %s on %s'", $msg, date('Y.m.d h:i:sa'));
+            $cmdArgs[] = '-m';
+            $cmdArgs[] = escapeshellarg(sprintf('Updated %s on %s', $msg, date('Y.m.d h:i:sa')));
             $cmd = new \OMV\System\Process('git', $cmdArgs);
             $cmd->setQuiet(true);
             $cmd->execute($output, $exitStatus);
@@ -98,18 +124,21 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         if (is_dir(sprintf("%s/.git", $sfpath))) {
             // git add to repo
             $cmdArgs = [];
-            $cmdArgs[] = sprintf("-C '%s'", $sfpath);
+            $cmdArgs[] = '-C';
+            $cmdArgs[] = escapeshellarg($sfpath);
             $cmdArgs[] = 'rm';
             $cmdArgs[] = '-f';
-            $cmdArgs = array_merge($cmdArgs, $files);
+            $cmdArgs = array_merge($cmdArgs, array_map('escapeshellarg', $files));
             $cmd = new \OMV\System\Process('git', $cmdArgs);
             $cmd->setQuiet(true);
             $cmd->execute($output, $exitStatus);
             // git commit change
             $cmdArgs = [];
-            $cmdArgs[] = sprintf("-C '%s'", $sfpath);
+            $cmdArgs[] = '-C';
+            $cmdArgs[] = escapeshellarg($sfpath);
             $cmdArgs[] = 'commit';
-            $cmdArgs[] = sprintf("-m 'Removed %s on %s'", $msg, date('Y.m.d h:i:sa'));
+            $cmdArgs[] = '-m';
+            $cmdArgs[] = escapeshellarg(sprintf('Removed %s on %s', $msg, date('Y.m.d h:i:sa')));
             $cmd = new \OMV\System\Process('git', $cmdArgs);
             $cmd->setQuiet(true);
             $cmd->execute($output, $exitStatus);
@@ -207,6 +236,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
         // Validate the parameters of the RPC service method.
         $this->validateMethodParams($params, 'rpc.scripts.setscript');
+        $this->assertValidName($params['name']);
         // Verify that shared folder is set
         $db = \OMV\Config\Database::getInstance();
         $sfpath = $this->getScriptsPath($context);
@@ -230,10 +260,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         }
         $db->set($object);
         // Apply changes immmediately
-        \OMV\Rpc\Rpc::call('Config', 'applyChanges', [
-            'modules' => [ 'scripts' ],
-            'force' => TRUE
-        ], $context);
+        $this->applyScriptChanges($context);
         // add and commit to git if repo exists
         $file = sprintf("%s.%s", $params['name'], $params['ext']);
         $this->addAndCommit($context, [$file], $file);
@@ -291,7 +318,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 if (file_exists($scriptFile)) {
                     $cmdArgs = [];
                     $cmdArgs[] = '/usr/sbin/omv-scripts-exec-wrapper';
-                    $cmdArgs[] = $scriptFile;
+                    $cmdArgs[] = escapeshellarg($scriptFile);
                     $cmdArgs = array_merge($cmdArgs, $this->splitArgs($script->get('testargs')));
                     $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
@@ -336,8 +363,12 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                             $cmdArgs[] = 'php';
                             $cmdArgs[] = '-l';
                             break;
+                        default:
+                            // Never fall through to executing the file itself.
+                            file_put_contents($bgOutputFilename, 'No checker available for this file type.' . PHP_EOL, FILE_APPEND);
+                            return $output;
                     }
-                    $cmdArgs[] = $scriptFile;
+                    $cmdArgs[] = escapeshellarg($scriptFile);
                     $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
                     $cmdLine = $cmd->getCommandLine();
@@ -382,17 +413,19 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         }
         // Put script in a temp file
         if ($script !== false) {
+            // Use only the URL path so a query string or fragment does not
+            // end up in the name or extension.
+            $urlPath = (string) parse_url($url, PHP_URL_PATH);
             if ($params['name'] == '') {
-                $name = pathinfo($url, PATHINFO_FILENAME);
+                $name = pathinfo($urlPath, PATHINFO_FILENAME);
             } else {
                 $name = $params['name'];
             }
-            $ext = pathinfo($url, PATHINFO_EXTENSION);
-            $tmpname = tempnam(sys_get_temp_dir(), "omv_scripts_");
-            unlink($tmpname);
-            $tmp = sprintf('%s.%s', $tmpname, $ext);
+            $this->assertValidName($name);
+            $ext = pathinfo($urlPath, PATHINFO_EXTENSION);
+            $tmp = tempnam(sys_get_temp_dir(), "omv_scripts_");
             file_put_contents($tmp, $script);
-            $exts = ['sh', 'ksh', 'py', 'conf', 'txt'];
+            $exts = self::IMPORT_EXTS;
             if (!in_array($ext, $exts)) {
                 $ext = $this->getExtForFile($tmp);
             }
@@ -404,12 +437,17 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 $object = new \OMV\Config\ConfigObject("conf.service.scripts.file");
                 $object->set('name', $name);
                 $object->set('ext', $ext);
-                $object->set('body', trim($script));
+                // No validation, as in setScript: JSON content would fail it.
+                $object->set('body', trim($script), FALSE);
                 $object->set('description', '');
                 $object->set('testargs', '');
                 // Set the configuration object.
                 $db->assertIsUnique($object, 'name');
                 $db->set($object);
+                // Write the file and commit it like setScript does.
+                $this->applyScriptChanges($context);
+                $file = sprintf('%s.%s', $name, $ext);
+                $this->addAndCommit($context, [$file], $file);
             }
         }
     }
@@ -429,7 +467,8 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             // Get file content
             $body = trim(file_get_contents($scriptFile));
             // Update object
-            $script->set('body', $body);
+            // No validation, as in setScript: JSON content would fail it.
+            $script->set('body', $body, FALSE);
             // Set the configuration object.
             $db->set($script);
         }
@@ -450,31 +489,35 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         $path = $params['path'];
         $path = (substr($path, 0, 1) == '/' ? $path : '/' . $path);
         $path = rtrim($path, '/');
-        // get files with sh, ksh, or py extensions
-        $sh = glob($path . "/*.sh");
-        $ksh = glob($path . "/*.ksh");
-        $py = glob($path . "/*.py");
-        $conf = glob($path . "/*.conf");
-        $txt = glob($path . "/*.txt");
-        // get files in path that have no extension but have a shell or python shebang
+        // get files with a supported extension
+        $all = [];
+        foreach (self::IMPORT_EXTS as $globExt) {
+            $all = array_merge($all, glob($path . "/*." . $globExt));
+        }
+        // get files in path that have no extension but have a shell, python or php shebang
         $cmdArgs = [];
         $cmdArgs[] = 'grep';
         $cmdArgs[] = '-l';
-        $cmdArgs[] = '-E \'^#!/(bin|usr/bin)/(bash|sh|ksh|python)|^#!/usr/bin/env (python|sh|bash|ksh)\'';
-        $cmdArgs[] = sprintf('%s/*', $path);
+        $cmdArgs[] = '-E \'^#!/(bin|usr/bin)/(bash|sh|ksh|python|php)|^#!/usr/bin/env (python|sh|bash|ksh|php)\'';
+        $cmdArgs[] = escapeshellarg($path) . '/*';
         $cmdArgs[] = '| awk NF';
         $cmd = new \OMV\System\Process($cmdArgs);
         $cmd->execute($search);
         // combine lists and make unique
-        $all = array_merge($sh, $ksh, $py, $conf, $txt, $search);
+        $all = array_merge($all, $search);
         $allu = array_unique(array_filter($all));
+        $imported = [];
         foreach ($allu as $script) {
             if (!is_file($script)) {
                 continue;
             }
             $name = pathinfo($script, PATHINFO_FILENAME);
+            // skip files whose name would be rejected by the script form
+            if (!preg_match('/^[A-Za-z0-9_.:-]+$/', $name)) {
+                continue;
+            }
             $ext = pathinfo($script, PATHINFO_EXTENSION);
-            if ($ext == '') {
+            if (!in_array($ext, self::IMPORT_EXTS)) {
                 $ext = $this->getExtForFile($script);
             }
             $body = trim(file_get_contents($script));
@@ -482,7 +525,8 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             $object = new \OMV\Config\ConfigObject("conf.service.scripts.file");
             $object->set('name', $name);
             $object->set('ext', $ext);
-            $object->set('body', $body);
+            // No validation, as in setScript: JSON content would fail it.
+            $object->set('body', $body, FALSE);
             $object->set('description', '');
             $object->set('testargs', '');
             // Set the configuration object.
@@ -492,6 +536,11 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 continue;
             }
             $db->set($object);
+            $imported[] = sprintf('%s.%s', $name, $ext);
+        }
+        if (count($imported) > 0) {
+            $this->applyScriptChanges($context);
+            $this->addAndCommit($context, $imported, implode(', ', $imported));
         }
     }
 
@@ -510,24 +559,30 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         if (!is_file($path)) {
             throw new \OMV\ExecException(gettext('Specified path is not a file!'));
         }
+        $name = pathinfo($path, PATHINFO_FILENAME);
+        $this->assertValidName($name);
         $ext = pathinfo($path, PATHINFO_EXTENSION);
-        $exts = ['sh', 'ksh', 'py', 'conf', 'txt'];
+        $exts = self::IMPORT_EXTS;
         if (!in_array($ext, $exts)) {
             $ext = $this->getExtForFile($path);
         }
         if (in_array($ext, $exts)) {
-            $name = pathinfo($path, PATHINFO_FILENAME);
             $body = trim(file_get_contents($path));
             // set object values
             $object = new \OMV\Config\ConfigObject("conf.service.scripts.file");
             $object->set('name', $name);
             $object->set('ext', $ext);
-            $object->set('body', $body);
+            // No validation, as in setScript: JSON content would fail it.
+            $object->set('body', $body, FALSE);
             $object->set('description', '');
             $object->set('testargs', '');
             // Set the configuration object.
             $db->assertIsUnique($object, 'name');
             $db->set($object);
+            // Write the file and commit it like setScript does.
+            $this->applyScriptChanges($context);
+            $file = sprintf('%s.%s', $name, $ext);
+            $this->addAndCommit($context, [$file], $file);
         }
     }
 
@@ -535,9 +590,18 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
     {
         $ext = 'txt';
         // search shebangs for script types
-        $search = ['/sh', '/bash', '/ksh', '/python', 'env sh', 'env bash', 'env ksh', 'env python'];
+        $search = ['/sh', '/bash', '/ksh', '/python', '/php', 'env sh', 'env bash', 'env ksh', 'env python', 'env php'];
         // Read the first line of the file
-        $line1 = trim(fgets(fopen($path, 'r')));
+        $fh = @fopen($path, 'r');
+        if ($fh === false) {
+            return ($ext);
+        }
+        $line1 = trim((string) fgets($fh));
+        fclose($fh);
+        // only a shebang line identifies a script type
+        if (strpos($line1, '#!') !== 0) {
+            return ($ext);
+        }
         foreach ($search as $pattern) {
             if (strpos($line1, $pattern) !== false) {
                 switch ($pattern) {
@@ -555,6 +619,10 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                     case 'env python':
                         $ext = 'py';
                         break;
+                    case '/php':
+                    case 'env php':
+                        $ext = 'php';
+                        break;
                 }
                 break;
             }
@@ -564,27 +632,50 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
 
     private function splitArgs($argstr)
     {
+        // Tokenize the way the shell does for the scheduled (cron) command
+        // line, minus expansions: whitespace separates arguments, single
+        // quotes are literal, a backslash escapes the next character outside
+        // quotes and \ " $ ` inside double quotes, and adjacent quoted and
+        // unquoted pieces join into a single argument.
         $args = [];
         $argstr = (string) $argstr;
-        if (strlen(trim($argstr)) === 0) {
-            return $args;
-        }
-        // Split on whitespace while honoring single and double quotes so that
-        // an argument containing spaces is passed as a single argument. This
-        // matches how the shell tokenizes the scheduled (cron) command line.
-        if (preg_match_all('/"(?:\\\\.|[^"\\\\])*"|\'[^\']*\'|\S+/', $argstr, $matches)) {
-            foreach ($matches[0] as $token) {
-                $len = strlen($token);
-                if ($len >= 2) {
-                    $first = $token[0];
-                    $last = $token[$len - 1];
-                    if (($first === '"' && $last === '"') ||
-                        ($first === "'" && $last === "'")) {
-                        $token = substr($token, 1, -1);
-                    }
+        $len = strlen($argstr);
+        $token = '';
+        $inToken = false;
+        for ($i = 0; $i < $len; $i++) {
+            $c = $argstr[$i];
+            if (ctype_space($c)) {
+                if ($inToken) {
+                    $args[] = escapeshellarg($token);
+                    $token = '';
+                    $inToken = false;
                 }
-                $args[] = escapeshellarg($token);
+                continue;
             }
+            $inToken = true;
+            if ($c === "'") {
+                $end = strpos($argstr, "'", $i + 1);
+                if ($end === false) {
+                    $end = $len;
+                }
+                $token .= substr($argstr, $i + 1, $end - $i - 1);
+                $i = $end;
+            } elseif ($c === '"') {
+                for ($i++; $i < $len && $argstr[$i] !== '"'; $i++) {
+                    if ($argstr[$i] === '\\' && $i + 1 < $len &&
+                        strpos('\\"$`', $argstr[$i + 1]) !== false) {
+                        $i++;
+                    }
+                    $token .= $argstr[$i];
+                }
+            } elseif ($c === '\\' && $i + 1 < $len) {
+                $token .= $argstr[++$i];
+            } else {
+                $token .= $c;
+            }
+        }
+        if ($inToken) {
+            $args[] = escapeshellarg($token);
         }
         return $args;
     }
@@ -593,6 +684,8 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
     {
         // Validate the RPC caller context.
         $this->validateMethodContext($context, ["role" => OMV_ROLE_ADMINISTRATOR]);
+        // Validate the parameters of the RPC service method.
+        $this->validateMethodParams($params, 'rpc.scripts.dogit');
         // Get the configuration object.
         $db = \OMV\Config\Database::getInstance();
         $object = false;
@@ -606,7 +699,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 switch ($params['command']) {
                     case 'init':
                         $cmdArgs = [];
-                        $cmdArgs[] = sprintf("'%s'", $sfpath);
+                        $cmdArgs[] = escapeshellarg($sfpath);
                         $cmd = new \OMV\System\Process('omv-scripts-init-git', $cmdArgs);
                         break;
                     case 'diff':
@@ -617,13 +710,17 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                         $ext = $object->get('ext');
 
                         $cmdArgs = [];
-                        $cmdArgs[] = sprintf("-C '%s'", $sfpath);
+                        $cmdArgs[] = '-C';
+                        $cmdArgs[] = escapeshellarg($sfpath);
                         $cmdArgs[] = 'log';
                         $cmdArgs[] = '-p';
                         $cmdArgs[] = '--';
-                        $cmdArgs[] = sprintf('%s.%s', $script, $ext);
+                        $cmdArgs[] = escapeshellarg(sprintf('%s.%s', $script, $ext));
                         $cmd = new \OMV\System\Process('git', $cmdArgs);
                         break;
+                    default:
+                        throw new \OMV\Exception(sprintf(
+                            gettext("Unknown git command '%s'."), $params['command']));
                 }
                 $cmd->setRedirect2to1();
                 $cmd->setQuiet(true);
@@ -733,7 +830,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 if (file_exists($scriptFile)) {
                     $cmdArgs = [];
                     $cmdArgs[] = '/usr/sbin/omv-scripts-exec-wrapper';
-                    $cmdArgs[] = $scriptFile;
+                    $cmdArgs[] = escapeshellarg($scriptFile);
                     $cmdArgs = array_merge($cmdArgs, $this->splitArgs($job->get('args')));
                     $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
@@ -795,6 +892,10 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
     {
         // Validate the RPC caller context.
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        // Validate the parameters of the RPC service method. The schema
+        // restricts id to a uuid and logfile to the tracker csv files.
+        $this->validateMethodParams($params, 'rpc.scripts.deletelog');
+        $this->assertRunLogPath($params['runlog']);
         $logfile = $params['logfile'];
         $id = $params['id'];
         $gz = $this->isGz($logfile);
@@ -806,7 +907,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                 while (!gzeof($in)) {
                     $line = gzgets($in);
                     // only write lines that do NOT start with our ID:
-                    if (!preg_match("/^{$id},/", $line)) {
+                    if (!preg_match('/^' . preg_quote($id, '/') . ',/', $line)) {
                         fwrite($out, $line);
                     }
                 }
@@ -828,8 +929,8 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
             $cmdArgs = [];
             $cmdArgs[] = 'sed';
             $cmdArgs[] = '-i';
-            $cmdArgs[] = sprintf("'/^%s/d'", $params['id']);
-            $cmdArgs[] = '/var/log/omv-scripts-exec-tracker.log';
+            $cmdArgs[] = escapeshellarg(sprintf('/^%s,/d', $id));
+            $cmdArgs[] = escapeshellarg($logfile);
             $cmd = new \OMV\System\Process($cmdArgs);
             $cmd->execute($search);
         }
@@ -843,6 +944,9 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
     {
         // Validate the RPC caller context.
         $this->validateMethodContext($context, ['role' => OMV_ROLE_ADMINISTRATOR]);
+        // Validate the parameters of the RPC service method.
+        $this->validateMethodParams($params, 'rpc.scripts.viewlog');
+        $this->assertRunLogPath($params['runlog']);
         return $this->execBgProc(function($bgStatusFilename, $bgOutputFilename)
             use ($params) {
                 $output = [];
@@ -870,7 +974,7 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
                     $gz = $this->isGz($runlog);
                     $cmdArgs = [];
                     $cmdArgs[] = $gz ? 'zcat' : 'cat';
-                    $cmdArgs[] = $runlog;
+                    $cmdArgs[] = escapeshellarg($runlog);
                     $cmd = new \OMV\System\Process($cmdArgs);
                     $cmd->setRedirect2to1();
                     $cmdLine = $cmd->getCommandLine();
@@ -887,20 +991,25 @@ class OMVRpcServiceScripts extends \OMV\Rpc\ServiceAbstract
         );
     }
 
+    private function assertRunLogPath($runlog)
+    {
+        // run logs are always written directly into the tracker directory
+        $runlog = (string) $runlog;
+        if (dirname($runlog) !== self::LOG_DIR ||
+            in_array(basename($runlog), ['.', '..'], true)) {
+            throw new \OMV\Exception('Invalid run log path ' . $runlog);
+        }
+    }
+
     private function isGz($path)
     {
+        // Anything that is not gzip is read as-is: script output can be any
+        // type (text, json, csv, binary) and a freshly rotated log is empty.
+        if (!is_file($path)) {
+            return false;
+        }
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $type = $finfo->file($path);
-        if (in_array($type, ['application/x-gzip','application/gzip'], true)) {
-            return true;
-        } elseif (strpos($type, 'text/') === 0) {
-            return false;
-        } elseif (in_array($type, ['application/x-empty','inode/x-empty'], true)) {
-            // a freshly logrotated main log is empty until the next run
-            // writes to it; treat it as a plain (empty) file, not gzip
-            return false;
-        } else {
-            throw new \OMV\Exception('bad file ' . $path);
-        }
+        return in_array($type, ['application/x-gzip','application/gzip'], true);
     }
 }

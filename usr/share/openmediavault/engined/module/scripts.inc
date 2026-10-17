@@ -27,12 +27,11 @@ class OMVModuleScripts extends \OMV\Engine\Module\ServiceAbstract
 
     final public function onSharedFolder($type, $path, $object)
     {
+        // The shared folder reference lives on the main scripts config,
+        // not on the individual script files.
         $db = \OMV\Config\Database::getInstance();
-        if (TRUE === $db->exists('conf.service.scripts.file', [
-            'operator' => 'stringEquals',
-            'arg0' => 'sharedfolderref',
-            'arg1' => $object['uuid']
-        ])) {
+        $config = $db->get('conf.service.scripts');
+        if ($config->get('sharedfolderref') === $object['uuid']) {
             $this->setDirty();
         }
     }
