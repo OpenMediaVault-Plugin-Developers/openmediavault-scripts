@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-02 15:06+0000\n"
+"POT-Creation-Date: 2026-10-17 15:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -83,6 +83,9 @@ msgstr ""
 msgid "Initialize new git repo ..."
 msgstr ""
 
+msgid "Invalid script name '%s'. Only letters, numbers and _ - . : are allowed."
+msgstr ""
+
 msgid "Logs"
 msgstr ""
 
@@ -135,6 +138,9 @@ msgid "This will import one script from the specified path.<br/>It will not impo
 msgstr ""
 
 msgid "URL"
+msgstr ""
+
+msgid "Unknown git command '%s'."
 msgstr ""
 
 msgid "if you choose days, then the log files will be retained for this number of days"

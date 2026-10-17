@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-02 15:06+0000\n"
+"POT-Creation-Date: 2026-10-17 15:31+0000\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: Kevin Leclercq <nuklearstriker@gmail.com>, 2024\n"
 "Language-Team: French (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/fr/)\n"
@@ -89,6 +89,10 @@ msgstr ""
 msgid "Initialize new git repo ..."
 msgstr ""
 
+msgid ""
+"Invalid script name '%s'. Only letters, numbers and _ - . : are allowed."
+msgstr ""
+
 msgid "Logs"
 msgstr ""
 
@@ -145,6 +149,9 @@ msgid ""
 msgstr ""
 
 msgid "URL"
+msgstr ""
+
+msgid "Unknown git command '%s'."
 msgstr ""
 
 msgid ""

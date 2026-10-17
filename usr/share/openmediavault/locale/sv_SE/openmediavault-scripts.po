@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-02 15:06+0000\n"
+"POT-Creation-Date: 2026-10-17 15:31+0000\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: Jonatan Nyberg, 2026\n"
 "Language-Team: Swedish (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/sv/)\n"
@@ -89,6 +89,10 @@ msgstr "Importerar ett befintligt skript…"
 msgid "Initialize new git repo ..."
 msgstr "Initiera nytt Git-förråd…"
 
+msgid ""
+"Invalid script name '%s'. Only letters, numbers and _ - . : are allowed."
+msgstr ""
+
 msgid "Logs"
 msgstr "Loggar"
 
@@ -151,6 +155,9 @@ msgstr ""
 
 msgid "URL"
 msgstr "Webbadress"
+
+msgid "Unknown git command '%s'."
+msgstr ""
 
 msgid ""
 "if you choose days, then the log files will be retained for this number of "

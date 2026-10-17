@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-02 15:06+0000\n"
+"POT-Creation-Date: 2026-10-17 15:31+0000\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: kochin <kochinc@outlook.com>, 2026\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/zh_TW/)\n"
@@ -89,6 +89,10 @@ msgstr "匯入一份現存腳本程式中 ..."
 msgid "Initialize new git repo ..."
 msgstr "初始化新的 git 源碼庫 ..."
 
+msgid ""
+"Invalid script name '%s'. Only letters, numbers and _ - . : are allowed."
+msgstr ""
+
 msgid "Logs"
 msgstr "日誌"
 
@@ -146,6 +150,9 @@ msgstr "這將匯入一份在所選路徑中的腳本程式。<br/>它不會把�
 
 msgid "URL"
 msgstr "URL"
+
+msgid "Unknown git command '%s'."
+msgstr ""
 
 msgid ""
 "if you choose days, then the log files will be retained for this number of "

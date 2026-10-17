@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: openmediavault-scripts\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-02 15:06+0000\n"
+"POT-Creation-Date: 2026-10-17 15:31+0000\n"
 "PO-Revision-Date: 2024-04-17 00:24+0000\n"
 "Last-Translator: Gyuris Gellért <jobel@ujevangelizacio.hu>, 2025\n"
 "Language-Team: Hungarian (Hungary) (https://app.transifex.com/openmediavault-plugin-developers/teams/1854/hu_HU/)\n"
@@ -89,6 +89,10 @@ msgstr "Egy meglévő parancsfájl importálása…"
 msgid "Initialize new git repo ..."
 msgstr "Új git tároló inicializálása…"
 
+msgid ""
+"Invalid script name '%s'. Only letters, numbers and _ - . : are allowed."
+msgstr ""
+
 msgid "Logs"
 msgstr "Napló"
 
@@ -152,6 +156,9 @@ msgstr ""
 
 msgid "URL"
 msgstr "URL"
+
+msgid "Unknown git command '%s'."
+msgstr ""
 
 msgid ""
 "if you choose days, then the log files will be retained for this number of "
